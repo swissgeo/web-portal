@@ -60,6 +60,7 @@ const backLabel = computed(() => {
             variant="ghost"
             :aria-label="t('dataset.close')"
             :ui="{ leadingIcon: 'max-md:size-6' }"
+            data-testid="dataset-close"
             @click="emit('close')"
           />
         </div>

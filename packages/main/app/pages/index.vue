@@ -69,7 +69,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           @click.stop=""
         >
           <div>
-            <h1 class="mb-6 text-4xl text-white lg:text-7xl">
+            <h1
+              class="mb-6 text-4xl text-white lg:text-7xl"
+              data-testid="landing-claim"
+            >
               {{ t("landing.footer.claim") }}
             </h1>
             <p class="text-lg font-medium text-white">
@@ -116,7 +119,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           @click="goToMap()"
         >
           <template #footer>
-            <UButton trailing-icon="i-lucide-arrow-right">
+            <UButton
+              trailing-icon="i-lucide-arrow-right"
+              data-testid="landing-map-button"
+            >
               {{ t("landing.cards.map.button") }}
             </UButton>
           </template>

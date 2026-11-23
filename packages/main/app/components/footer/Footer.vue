@@ -23,6 +23,7 @@ const mobileNavButtons = computed(() => [
   {
     icon: Map,
     label: t("footer.mobileNav.map"),
+    "data-testid": "footer-nav-map",
     variant: isMapActive.value
       ? ("solid-inverted" as const)
       : ("ghost-inverted" as const),
@@ -42,6 +43,7 @@ const mobileNavButtons = computed(() => [
   {
     icon: Layers3,
     label: t("footer.mobileNav.catalog"),
+    "data-testid": "footer-nav-catalog",
     variant: isCatalogActive.value
       ? ("solid-inverted" as const)
       : ("ghost-inverted" as const),
@@ -54,6 +56,7 @@ const mobileNavButtons = computed(() => [
   {
     icon: Wrench,
     label: t("footer.mobileNav.tools"),
+    "data-testid": "footer-nav-tools",
     variant: "ghost-inverted" as const,
   },
 ]);
