@@ -454,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
       "workingOnIt": "El suonda en ina versiun posteriura.",
+      "someNotAvailable": "Intgins utensils n'èn anc betg disponibels.",
+      "someWorkingOnIt": "Els suondan en ina versiun posteriura.",
       "links": {
         "roadmap": "geoplattform-ausblick"
       }

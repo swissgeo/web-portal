@@ -11,6 +11,7 @@ const {
   isVisible = true,
   isDismissible = true,
   hasOwnScroller = false,
+  fitsContent = false,
   itemCount,
   collapseLabel,
   expandLabel,
@@ -24,6 +25,8 @@ const {
   isDismissible?: boolean;
   // The content scrolls in an element of its own, e.g. below a fixed header
   hasOwnScroller?: boolean;
+  // Opens only as high as its content, as with a footer
+  fitsContent?: boolean;
   // A change measures the content height again, opening an item does not
   itemCount?: number;
 }>();
@@ -144,7 +147,7 @@ const scrollerClass = computed(() => {
 });
 
 const { drawer } = useDrawerFooterFrame(scroller, contentSnapHeight, {
-  isEnabled: () => !!slots.footer && !isDesktop.value,
+  isEnabled: () => (!!slots.footer || fitsContent) && !isDesktop.value,
   isVisible: () => isVisible,
   itemCount: () => itemCount,
   maxSnapHeight: () => defaultPartialSnapPoint * window.innerHeight,

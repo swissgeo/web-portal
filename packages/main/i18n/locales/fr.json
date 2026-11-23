@@ -454,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "Cet outil n'est pas encore disponible.",
       "workingOnIt": "Il suivra dans une version ultérieure.",
+      "someNotAvailable": "Certains outils ne sont pas encore disponibles.",
+      "someWorkingOnIt": "Ils suivront dans une version ultérieure.",
       "links": {
         "roadmap": "geoplateforme-perspectives"
       }

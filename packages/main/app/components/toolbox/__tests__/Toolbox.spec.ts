@@ -7,10 +7,11 @@ import { nextTick } from "vue";
 
 import Toolbox from "@/components/toolbox/Toolbox.vue";
 
-const { isDesktop, toolboxStore } = await vi.hoisted(async () => {
+const { isDesktop, enabledFlags, toolboxStore } = await vi.hoisted(async () => {
   const { reactive, ref } = await import("vue");
   return {
     isDesktop: ref(true),
+    enabledFlags: ref<string[]>([]),
     toolboxStore: reactive({
       showFullScreenButton: true,
       showGeolocationButton: true,
@@ -30,6 +31,12 @@ const { isDesktop, toolboxStore } = await vi.hoisted(async () => {
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
+mockNuxtImport("useFeatureFlags", () => () => ({
+  isEnabled: (flag: string) => enabledFlags.value.includes(flag),
+}));
+mockNuxtImport("useCmsUrl", () => () => ({
+  cmsUrl: (path: string) => `https://cms.test/de/${path}`,
+}));
 vi.mock("@/stores/toolbox", () => ({ useToolboxStore: () => toolboxStore }));
 
 function stub(name: string, props: string[] = []) {
@@ -40,7 +47,7 @@ const stubs = {
   UCard: { template: "<div><slot /></div>" },
   ResponsivePanel: {
     name: "ResponsivePanel",
-    props: ["title"],
+    props: { title: String, fitsContent: Boolean },
     template: '<div data-stub="ResponsivePanel"><slot /></div>',
   },
   FullScreenButton: stub("FullScreenButton", ["iconOnly"]),
@@ -65,6 +72,7 @@ describe("Toolbox.vue", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     isDesktop.value = true;
+    enabledFlags.value = [];
     toolboxStore.activeDetailPanel = null;
   });
 
@@ -139,6 +147,47 @@ describe("Toolbox.vue", () => {
       ]) {
         expect(tools.find(`[data-stub='${name}']`).exists()).toBe(true);
       }
+    });
+
+    it("opens the tools drawer only as high as its content", () => {
+      useSidebarStore().setSidebar(SidebarType.TOOLS);
+
+      expect(
+        mountToolbox()
+          .findComponent({ name: "ResponsivePanel" })
+          .props("fitsContent"),
+      ).toBe(true);
+    });
+
+    it("says once in the tools drawer that some tools follow later", () => {
+      useSidebarStore().setSidebar(SidebarType.TOOLS);
+
+      const remark = mountToolbox().find(
+        "[data-testid='toolbox-mobile-unavailable']",
+      );
+
+      expect(remark.text()).toContain("toolbox.featureFlag.someNotAvailable");
+      expect(remark.find("a").attributes("href")).toBe(
+        "https://cms.test/de/toolbox.featureFlag.links.roadmap",
+      );
+    });
+
+    it("leaves the remark out when all tools are available", () => {
+      enabledFlags.value = [
+        "tools.enableDrawing",
+        "tools.enableMeasure",
+        "tools.enableCompare",
+        "tools.enableImport",
+        "tools.enableShare",
+        "tools.enablePrint",
+      ];
+      useSidebarStore().setSidebar(SidebarType.TOOLS);
+
+      expect(
+        mountToolbox()
+          .find("[data-testid='toolbox-mobile-unavailable']")
+          .exists(),
+      ).toBe(false);
     });
 
     it("closes the tools drawer when a tool opens its panel", async () => {

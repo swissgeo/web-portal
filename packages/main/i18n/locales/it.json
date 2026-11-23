@@ -454,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "Questo strumento non è ancora disponibile.",
       "workingOnIt": "Seguirà in una versione successiva.",
+      "someNotAvailable": "Alcuni strumenti non sono ancora disponibili.",
+      "someWorkingOnIt": "Seguiranno in una versione successiva.",
       "links": {
         "roadmap": "geopiattaforma-prospettive"
       }

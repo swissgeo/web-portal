@@ -23,6 +23,8 @@ const toolboxStore = useToolboxStore();
 const sidebarStore = useSidebarStore();
 const { t } = useI18n();
 const isDesktop = useIsDesktop();
+const { isEnabled } = useFeatureFlags();
+const { cmsUrl } = useCmsUrl();
 
 const displayMode = inject(displayModeKey, "web");
 
@@ -44,6 +46,20 @@ watch(
       sidebarStore.closeSidebar();
     }
   },
+);
+
+// The tools drawer says once that some of its tools follow later
+const hasUnavailableTools = computed(() =>
+  (
+    [
+      [toolboxStore.showDrawButton, "tools.enableDrawing"],
+      [toolboxStore.showMeasureButton, "tools.enableMeasure"],
+      [toolboxStore.showCompareSliderButton, "tools.enableCompare"],
+      [toolboxStore.showImportButton, "tools.enableImport"],
+      [toolboxStore.showShareButton, "tools.enableShare"],
+      [toolboxStore.showPrintButton, "tools.enablePrint"],
+    ] as const
+  ).some(([isShown, flag]) => isShown && !isEnabled(flag)),
 );
 
 const [DefineMapControls, MapControls] = createReusableTemplate();
@@ -97,13 +113,32 @@ const [DefineTools, Tools] = createReusableTemplate();
       :closeLabel="t('toolbox.mobileDrawer.close')"
       :expandLabel="t('toolbox.mobileDrawer.expand')"
       :collapseLabel="t('toolbox.mobileDrawer.collapse')"
+      fitsContent
       @close="sidebarStore.closeSidebar()"
     >
-      <div
-        class="flex flex-wrap justify-center gap-2 p-4"
-        data-testid="toolbox-mobile-tools"
-      >
-        <Tools />
+      <div class="mx-4 flex flex-col gap-4 border-t border-default py-4">
+        <div
+          v-if="hasUnavailableTools"
+          class="rounded-lg bg-info p-4 text-sm leading-small-text font-medium text-info-on-accent"
+          data-testid="toolbox-mobile-unavailable"
+        >
+          <p>{{ t("toolbox.featureFlag.someNotAvailable") }}</p>
+          <a
+            :href="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
+            target="_blank"
+            rel="noopener"
+            class="font-semibold underline"
+          >
+            {{ t("toolbox.featureFlag.someWorkingOnIt") }}
+          </a>
+        </div>
+        <!-- Three tools per row, with a line below each row -->
+        <div
+          class="grid auto-rows-14 grid-cols-3 place-items-center bg-[repeating-linear-gradient(transparent_0_calc(3.5rem-1px),var(--ui-border)_calc(3.5rem-1px)_3.5rem)]"
+          data-testid="toolbox-mobile-tools"
+        >
+          <Tools />
+        </div>
       </div>
     </ResponsivePanel>
     <ToolboxDetail />

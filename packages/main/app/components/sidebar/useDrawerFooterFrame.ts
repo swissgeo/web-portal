@@ -65,27 +65,30 @@ export function useDrawerFooterFrame(
   }
 
   function fitToContent() {
-    const footer = container.value?.querySelector<HTMLElement>(
-      '[data-slot="footer"]',
-    );
     if (
+      !options.isEnabled() ||
       !options.isVisible() ||
       !container.value ||
       !drawer.value ||
-      !scroller.value ||
-      !footer
+      !scroller.value
     ) {
       return;
     }
-    // scrollHeight never gets lower than the box, so measure where the content ends
+    const footer = container.value.querySelector<HTMLElement>(
+      '[data-slot="footer"]',
+    );
+    // scrollHeight never gets lower than the box, so measure where the content
+    // ends, from the top of the container to count a header above it too
     const lastRow = scroller.value.lastElementChild;
-    const scrollerContentHeight = lastRow
+    const containerContentHeight = lastRow
       ? lastRow.getBoundingClientRect().bottom -
-        scroller.value.getBoundingClientRect().top +
+        container.value.getBoundingClientRect().top +
         scroller.value.scrollTop
       : 0;
     const contentHeight =
-      container.value.offsetTop + scrollerContentHeight + footer.offsetHeight;
+      container.value.offsetTop +
+      containerContentHeight +
+      (footer?.offsetHeight ?? 0);
     // vaul places a px snap point this far above the bottom of the window
     const snapHeight =
       contentHeight + window.innerHeight - drawer.value.offsetHeight;

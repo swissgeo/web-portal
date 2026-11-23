@@ -57,6 +57,7 @@ function mountPanel(
     isVisible?: boolean;
     isDismissible?: boolean;
     hasOwnScroller?: boolean;
+    fitsContent?: boolean;
   } = {},
   sharedSnapPoint?: Ref<number | string | null>,
 ) {
@@ -110,19 +111,18 @@ function layOut(
   });
   Object.defineProperty(container, "offsetTop", { value: 20 });
   Object.defineProperty(footer, "offsetHeight", { value: 100 });
-  setContentHeight(wrapper, contentHeight);
   container.getBoundingClientRect = () => ({ top: 400 }) as DOMRect;
+  setContentHeight(wrapper, contentHeight);
   return { drawer, container };
 }
 
-// The content ends this far below the top of the scroller
+// The content ends this far below the top of the container, which starts at 400
 function setContentHeight(
   wrapper: ReturnType<typeof mountPanelWithFooter>,
   contentHeight: number,
 ) {
-  scroller(wrapper).getBoundingClientRect = () => ({ top: 0 }) as DOMRect;
   wrapper.get("[data-testid='content']").element.getBoundingClientRect = () =>
-    ({ bottom: contentHeight }) as DOMRect;
+    ({ bottom: 400 + contentHeight }) as DOMRect;
 }
 
 function scroller(wrapper: ReturnType<typeof mountPanel>) {
@@ -363,6 +363,28 @@ describe("ResponsivePanel.vue", () => {
 
       await toggle.trigger("click");
       expect(drawer.props("activeSnapPoint")).toBe(0.75);
+    });
+
+    describe("without a footer", () => {
+      // The UDrawer stub always renders a footer box, measured 100 high
+      it.each`
+        fitsContent | snapPoints
+        ${false}    | ${[0.75, 1]}
+        ${true}     | ${["340px", 1]}
+      `(
+        "opens as high as its content only when asked: $fitsContent",
+        async ({ fitsContent, snapPoints }) => {
+          const wrapper = mountPanel({ fitsContent });
+          await flushPromises();
+          layOut(wrapper, 60);
+          window.dispatchEvent(new Event("resize"));
+          await nextTick();
+
+          expect(
+            wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+          ).toEqual(snapPoints);
+        },
+      );
     });
 
     describe("with a footer", () => {
