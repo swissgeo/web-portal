@@ -6,7 +6,7 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 /** One location result for any query, as the geo.admin.ch search would return */
 async function mockLocationSearch(page: Page) {

@@ -7,10 +7,10 @@ import {
   cleanupExternalRequestMocks,
   HYDRATION_TIMEOUT,
   mockExternalRequests,
-} from "./setup";
+} from "../setup";
 
 const fixturePath = (filename: string) =>
-  fileURLToPath(new URL(`../fixtures/${filename}`, import.meta.url));
+  fileURLToPath(new URL(`../../fixtures/${filename}`, import.meta.url));
 
 const getLayerCount = (page: Page) =>
   page.evaluate(() => window.swissgeoOlMap?.getLayers().getArray().length ?? 0);

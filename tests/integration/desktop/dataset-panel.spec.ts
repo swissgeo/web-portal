@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
-import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChSwisstopoPixelkarteFarbeDataset from "../../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChSwisstopoPixelkarteFarbeDistribution from "../../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import {
   HYDRATION_TIMEOUT,
   cleanupExternalRequestMocks,
   mockExternalRequests,
-} from "./setup";
+} from "../setup";
 
 test.describe("dataset detail panel", () => {
   test.beforeEach(async ({ page }) => {
