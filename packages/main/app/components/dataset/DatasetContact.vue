@@ -13,6 +13,24 @@ interface ContactRow {
   label: string;
 }
 
+// Figma: an outline button on phones, a plain row like email and website on desktop.
+const PHONE_BUTTON = {
+  color: "primary",
+  variant: "outline",
+  class: "my-space-2xs",
+} as const;
+const DESKTOP_ROW = {
+  color: "neutral",
+  variant: "link",
+  class: "mt-space-2xs p-0 text-sm text-default",
+  ui: { leadingIcon: "size-4" },
+} as const;
+
+const isDesktop = useIsDesktop();
+const phoneLink = computed(() =>
+  isDesktop.value ? DESKTOP_ROW : PHONE_BUTTON,
+);
+
 // Skip fax numbers.
 const phone = computed(() =>
   contact.phones?.find(({ roles }) => !roles?.includes("fax")),
@@ -52,9 +70,7 @@ const rows = computed((): ContactRow[] => {
         v-if="phone"
         :to="`tel:${phone.value.replace(/\s/g, '')}`"
         icon="i-lucide-phone"
-        color="primary"
-        variant="outline"
-        class="my-space-2xs"
+        v-bind="phoneLink"
       >
         {{ phone.value }}
       </UButton>
