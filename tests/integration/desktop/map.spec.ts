@@ -3,14 +3,13 @@ import type BaseLayer from "ol/layer/Base";
 
 import { expect, test } from "@playwright/test";
 
-import { waitForZoom } from "../utils";
-
 import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   mockMapBackground,
   cleanupExternalRequestMocks,
 } from "../setup";
+import { waitForZoom } from "../utils";
 
 test.describe("map page", () => {
   const getZoom = async (page: Page) => {
