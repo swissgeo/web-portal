@@ -42,8 +42,9 @@ const backLabel = computed(() => {
     <header
       class="flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
     >
+      <!-- On a phone the close button sits on its own line above the back button. -->
       <div
-        class="flex items-center justify-between gap-space-s px-4 pt-4 pb-space-xs md:p-0"
+        class="flex flex-col-reverse items-start px-4 pb-4 md:flex-row md:items-center md:justify-between md:gap-space-s md:p-0"
       >
         <UButton
           icon="i-lucide-arrow-left"
@@ -52,40 +53,44 @@ const backLabel = computed(() => {
         >
           {{ backLabel }}
         </UButton>
-        <div class="flex items-center gap-space-xs">
+        <div class="flex items-center gap-space-xs self-end md:self-auto">
           <UButton
             icon="i-lucide-x"
             color="neutral"
             variant="ghost"
             :aria-label="t('dataset.close')"
+            :ui="{ leadingIcon: 'max-md:size-6' }"
             @click="emit('close')"
           />
         </div>
       </div>
       <div
-        class="flex flex-col items-start gap-space-s p-4 md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
+        class="flex flex-col items-start gap-4 px-4 pb-4 md:gap-space-s md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
       >
-        <!-- Reserve space on the last title line for the share button. -->
-        <div class="min-w-0">
+        <div
+          class="w-full min-w-0 text-xl leading-heading @2xl:w-auto @2xl:text-3xl"
+        >
           <h1
             id="dataset-panel-title"
             data-testid="dataset-title"
-            class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+            class="inline text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+            :class="dataset?.properties.aggregated ? 'pr-4' : 'pr-10'"
           >
             {{ dataset?.properties.title }}
           </h1>
-          <DatasetCopyLink
-            class="-ml-8 align-baseline"
-            :url="detailUrl"
-            :label="t('dataset.copyLink')"
-          />
           <UBadge
             v-if="dataset?.properties.aggregated"
             color="neutral"
             variant="subtle"
             :label="t('dataset.aggregated')"
-            class="ml-space-xs align-middle"
+            class="mr-10 align-middle"
             data-testid="dataset-aggregated"
+          />
+          <DatasetCopyLink
+            class="-ml-7.5 align-middle"
+            :ui="{ leadingIcon: 'max-md:size-4' }"
+            :url="detailUrl"
+            :label="t('dataset.copyLink')"
           />
         </div>
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
