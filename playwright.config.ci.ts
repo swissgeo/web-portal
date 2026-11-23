@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./tests/integration",
   // Default expect() timeout. 15s is enough for prod preview hydration;
   // the HYDRATION_TIMEOUT guard in the spec file covers dev-mode cold starts.
   expect: { timeout: 15_000 },
@@ -21,9 +20,19 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testDir: "./tests/integration/desktop",
       use: {
         ...devices["Desktop Chrome"],
+        isMobile: false,
         viewport: { width: 1920, height: 1080 },
+      },
+    },
+    {
+      name: "mobile",
+      testDir: "./tests/integration/mobile",
+      use: {
+        ...devices["Pixel 5"],
+        isMobile: true,
       },
     },
   ],
