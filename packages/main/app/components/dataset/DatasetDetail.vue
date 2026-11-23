@@ -128,7 +128,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
           class="border-y border-default py-space-s"
           data-testid="dataset-contacts"
         >
-          <h3 class="mb-space-xs text-xs font-medium tracking-wide text-muted">
+          <h3
+            class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+          >
             {{ t("dataset.contact") }}
           </h3>
           <ul class="flex flex-col gap-space-s">
