@@ -30,45 +30,48 @@ const protocol = computed(() => {
 </script>
 
 <template>
-  <div class="grid gap-space-xs p-space-s text-sm @2xl:grid-cols-[7rem_1fr]">
-    <p class="order-2 wrap-anywhere @2xl:order-none">
+  <div
+    class="grid grid-cols-[minmax(0,1fr)_auto] gap-space-xs px-space-xs py-4 text-sm font-medium @2xl:grid-cols-[7rem_minmax(0,1fr)_auto] @2xl:p-space-s @2xl:font-normal"
+  >
+    <p class="wrap-anywhere">
       {{ protocol }}
     </p>
-    <div class="order-1 flex min-w-0 items-start gap-space-xs @2xl:order-none">
-      <div class="min-w-0 flex-1 wrap-anywhere">
-        <ClientOnly>
-          <p v-if="isLoading" role="status" class="text-muted">
-            {{ t("dataset.serviceLoading") }}
-          </p>
-          <ErrorPill v-else-if="error">
-            {{ t("dataset.serviceError") }}
-          </ErrorPill>
-          <p v-else-if="address" class="font-semibold @2xl:font-normal">
-            {{ address }}
-          </p>
-        </ClientOnly>
-      </div>
+    <div class="row-start-2 wrap-anywhere @2xl:row-start-auto">
       <ClientOnly>
-        <div v-if="address && !isLoading && !error" class="flex shrink-0">
-          <UTooltip :text="t('dataset.openService')">
-            <UButton
-              :to="address"
-              target="_blank"
-              icon="i-lucide-external-link"
-              color="primary"
-              variant="ghost"
-              :aria-label="t('dataset.openService')"
-              data-testid="dataset-service-open"
-            />
-          </UTooltip>
-          <DatasetCopyLink
-            :url="address"
-            :label="t('dataset.copy')"
-            default-icon="i-lucide-copy"
-            data-testid="dataset-service-copy"
-          />
-        </div>
+        <p v-if="isLoading" role="status" class="text-muted">
+          {{ t("dataset.serviceLoading") }}
+        </p>
+        <ErrorPill v-else-if="error">
+          {{ t("dataset.serviceError") }}
+        </ErrorPill>
+        <p v-else-if="address">
+          {{ address }}
+        </p>
       </ClientOnly>
     </div>
+    <ClientOnly>
+      <div
+        v-if="address && !isLoading && !error"
+        class="col-start-2 row-span-2 row-start-1 flex self-start @2xl:col-start-auto @2xl:row-span-1 @2xl:row-start-auto"
+      >
+        <DatasetCopyLink
+          :url="address"
+          :label="t('dataset.copy')"
+          default-icon="i-lucide-copy"
+          data-testid="dataset-service-copy"
+        />
+        <UTooltip :text="t('dataset.openService')">
+          <UButton
+            :to="address"
+            target="_blank"
+            icon="i-lucide-external-link"
+            color="primary"
+            variant="ghost"
+            :aria-label="t('dataset.openService')"
+            data-testid="dataset-service-open"
+          />
+        </UTooltip>
+      </div>
+    </ClientOnly>
   </div>
 </template>
