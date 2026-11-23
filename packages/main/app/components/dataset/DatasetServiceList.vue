@@ -41,18 +41,20 @@ const groups = computed(() => [
         v-if="group.distributions.length"
         v-show="group.distributions.some(isVisible)"
       >
-        <h4 class="mb-space-xs text-sm font-semibold text-highlighted">
+        <h4
+          class="mb-space-xs text-base font-semibold text-highlighted @2xl:text-sm"
+        >
           {{ t(group.label) }}
         </h4>
-        <div class="rounded-md border border-default">
+        <div class="rounded-md border border-accented">
           <div
-            class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-default p-space-s text-xs font-semibold @2xl:grid"
+            class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-accented p-space-s text-xs font-semibold @2xl:grid"
             aria-hidden="true"
           >
             <span>{{ t("dataset.format") }}</span>
             <span>{{ t("dataset.serviceUrl") }}</span>
           </div>
-          <ul class="divide-y divide-default">
+          <ul class="divide-y divide-accented">
             <li
               v-for="distribution in group.distributions"
               :key="distribution.id"

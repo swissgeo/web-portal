@@ -118,3 +118,99 @@ test.describe("dataset detail panel", () => {
     expect((await tabList.boundingBox())!.y).toBe(tabListBox!.y);
   });
 });
+
+// Without isMobile the page keeps its 390px layout viewport, so the mobile
+// layout shows even while featureFlags.enableMobileUi is off
+test.describe("dataset detail panel on a phone", () => {
+  test.use({ hasTouch: true });
+
+  test.beforeEach(async ({ page }) => {
+    await mockExternalRequests(page).mockAll();
+    // The catalog search of the topbar lists the dataset as a layer result
+    await page.route(
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items?*",
+      (route) =>
+        route.fulfill({
+          status: 200,
+          json: {
+            type: "FeatureCollection",
+            features: [ChSwisstopoPixelkarteFarbeDataset],
+            links: [],
+          },
+        }),
+    );
+    // The dataset page fetches the record itself, client-side like the search
+    await page.route(
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_pixelkarte-farbe*",
+      (route) =>
+        route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDataset }),
+    );
+    await page.route(
+      "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe*",
+      (route) =>
+        route.fulfill({
+          status: 200,
+          json: ChSwisstopoPixelkarteFarbeDistribution,
+        }),
+    );
+  });
+
+  test.afterEach(async ({ page }) => {
+    await cleanupExternalRequestMocks(page);
+  });
+
+  test("switches the tabs by touch and closes without a horizontal scroll", async ({
+    page,
+  }) => {
+    // A direct load renders the dataset on the server, where the route mocks
+    // do not apply. The search opens it in the browser. Its info button only
+    // shows on wide screens, so the phone size comes after the navigation.
+    await page.goto("/de/map");
+    await expect(page.getByTestId("ol-map")).toBeVisible({
+      timeout: HYDRATION_TIMEOUT,
+    });
+    await page.getByTestId("topbar-search-input").fill("pixelkarte");
+    await page.getByTestId("search-result-info-0").click();
+    await expect(page).toHaveURL(/\/de\/dataset\//);
+    await page.setViewportSize({ width: 390, height: 844 });
+
+    const panel = page.getByTestId("dataset-panel");
+    await expect(panel.getByTestId("dataset-title")).toBeVisible();
+
+    const hasHorizontalScroll = () =>
+      page.evaluate(
+        () =>
+          document.documentElement.scrollWidth >
+          document.documentElement.clientWidth,
+      );
+    expect(await hasHorizontalScroll()).toBe(false);
+
+    for (const [name, tab] of [
+      ["Legende", "legend"],
+      ["Datenbezug", "data-access"],
+      ["Metadaten", "metadata"],
+    ]) {
+      await panel.getByRole("tab", { name }).tap();
+      await expect(panel.getByRole("tab", { name })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      await expect(page).toHaveURL(new RegExp(`tab=${tab}`));
+      expect(await hasHorizontalScroll()).toBe(false);
+    }
+    // The default tab keeps the URL short
+    await panel.getByRole("tab", { name: "Überblick" }).tap();
+    await expect(page).not.toHaveURL(/tab=/);
+
+    // the "map not available" toast would cover the close button
+    await page
+      .getByRole("region", { name: "Benachrichtigungen (F8)" })
+      .locator('[data-slot="close"]')
+      .tap();
+    await panel
+      .getByRole("button", { name: "Datensatzdetails schliessen" })
+      .tap();
+    await expect(panel).toBeHidden();
+    await expect(page).toHaveURL(/\/de\/map/);
+  });
+});

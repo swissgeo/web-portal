@@ -170,14 +170,14 @@ describe("dataset service addresses", () => {
       '[data-testid="dataset-service-open"], [data-testid="dataset-service-copy"]',
     );
     expect(actions.map((action) => action.attributes("data-testid"))).toEqual([
-      "dataset-service-open",
       "dataset-service-copy",
+      "dataset-service-open",
     ]);
     expect(
       wrapper
         .findAll("[data-tooltip]")
         .map((tip) => tip.attributes("data-tooltip")),
-    ).toEqual(["Open in new tab", "Copy"]);
+    ).toEqual(["Copy", "Open in new tab"]);
     expect(wrapper.text()).toContain("WMS");
     expect(wrapper.text()).not.toContain("provider.layer");
     expect(fetchMock).toHaveBeenCalledWith(

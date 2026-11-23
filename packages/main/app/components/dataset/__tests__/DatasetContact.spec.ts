@@ -3,10 +3,13 @@ import type { Contact } from "@swissgeo/ogc";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
+import { ref } from "vue";
 
 import DatasetContact from "../DatasetContact.vue";
 
+const isDesktop = ref(true);
 mockNuxtImport("useAppConfig", () => () => ({ ui: {} }));
+mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 const organization = "Federal Office of Topography";
 
@@ -98,5 +101,25 @@ describe("DatasetContact", () => {
     });
 
     expect(wrapper.get("a").text()).toBe("kgk-cgc.ch");
+  });
+
+  it("shows the phone as an outline button on phones", () => {
+    isDesktop.value = false;
+    const wrapper = mount(DatasetContact, {
+      props: {
+        contact: { organization, phones: [{ value: "058 469 01 11" }] },
+      },
+      global: {
+        stubs: {
+          UButton: {
+            props: ["variant"],
+            template: "<a :data-variant='variant' />",
+          },
+        },
+      },
+    });
+
+    expect(wrapper.get("a").attributes("data-variant")).toBe("outline");
+    isDesktop.value = true;
   });
 });
