@@ -1,5 +1,7 @@
+import type { GeoJSONLayer } from "@swissgeo/map";
+
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import FileConverter from "../FileConverter.vue";
 
@@ -113,10 +115,7 @@ describe("FileConverter", () => {
       },
     });
 
-    const emitted = wrapper.emitted("update")![0]![0] as Record<
-      string,
-      unknown
-    >;
+    const emitted = wrapper.emitted("update")![0]![0] as GeoJSONLayer;
     expect(emitted.geoJsonData).toEqual(featureCollection);
   });
 
@@ -161,13 +160,17 @@ describe("FileConverter", () => {
       opacity: 0,
       isLoading: false,
     };
+    // wrapper.emitted() history is cleared on unmount (@vue/test-utils >= 2.6),
+    // so listen to the event directly
+    const onRemove = vi.fn();
     const wrapper = mount(FileConverter, {
       props: {
         layer: layerData,
+        onRemove,
       },
     });
 
     wrapper.unmount();
-    expect(wrapper.emitted("remove")).toEqual([[layerData.uuid]]);
+    expect(onRemove.mock.calls).toEqual([[layerData.uuid]]);
   });
 });

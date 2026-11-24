@@ -275,9 +275,13 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
   });
 
   it("emits the remove if the converter gets unmounted", async () => {
+    // wrapper.emitted() history is cleared on unmount (@vue/test-utils >= 2.6),
+    // so listen to the event directly
+    const onRemove = vi.fn();
     const wrapper = mount(OgcDatasetConverter, {
       shallow: true,
       propsData: {
+        onRemove,
         layer: {
           isLoading: false,
           type: "dataset",
@@ -291,7 +295,7 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     wrapper.unmount();
     await flushPromises();
 
-    expect(wrapper.emitted("remove")).toEqual([["some-fancy-uuid"]]);
+    expect(onRemove.mock.calls).toEqual([["some-fancy-uuid"]]);
   });
 
   describe("WMTS-side WMS feature info gate", () => {
