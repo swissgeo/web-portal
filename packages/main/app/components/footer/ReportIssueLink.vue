@@ -19,12 +19,12 @@ const displayReportIssueForm = ref(false);
       variant="link"
       color="error"
       size="sm"
-      class="gap-1 px-0"
+      class="gap-1 px-0 font-bold"
       :to="reportIssuePortalUrl"
       target="_blank"
       external
     >
-      <UIcon name="i-lucide-triangle-alert" class="size-3 shrink-0" />
+      <UIcon name="i-lucide-triangle-alert" class="size-[13px] shrink-0" />
       {{ t("footer.reportIssue.buttonTitle") }}
     </UButton>
     <template v-else>
@@ -55,10 +55,10 @@ const displayReportIssueForm = ref(false);
         variant="link"
         color="error"
         size="sm"
-        class="gap-1 px-0"
+        class="gap-1 px-0 font-bold"
         @click="displayReportIssueForm = true"
       >
-        <UIcon name="i-lucide-triangle-alert" class="size-3 shrink-0" />
+        <UIcon name="i-lucide-triangle-alert" class="size-[13px] shrink-0" />
         {{ t("footer.reportIssue.buttonTitle") }}
       </UButton>
     </template>

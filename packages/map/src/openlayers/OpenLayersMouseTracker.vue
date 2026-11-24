@@ -56,10 +56,12 @@ watchDebounced(
   <div class="flex flex-row items-center gap-2">
     <USelect
       size="xs"
-      variant="ghost"
+      variant="none"
       :ui="{
         content: 'min-w-fit',
-        base: 'min-w-fit',
+        base: 'min-w-fit py-space-2xs ps-0 pe-[calc(13px+0.375rem)] text-tiny font-medium text-accent',
+        trailing: 'pe-0',
+        trailingIcon: 'size-[13px] text-accent',
       }"
       :items="
         allFormats.map((format) => ({
@@ -69,7 +71,6 @@ watchDebounced(
       "
       v-model="displayedFormatId"
       @update:modelValue="setDisplayedFormatWithId"
-      class="w-32"
     />
     <div class="font-mono">
       {{ mousePosition }}
