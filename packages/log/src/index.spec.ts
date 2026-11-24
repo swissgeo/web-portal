@@ -1,5 +1,4 @@
-import { context } from "@opentelemetry/api";
-import { logs, SeverityNumber } from "@opentelemetry/api-logs";
+import { context, logs, SeverityNumber } from "@opentelemetry/api";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import log, { LogLevel, LogPreDefinedColor } from "./index";
