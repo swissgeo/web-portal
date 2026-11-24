@@ -2,16 +2,14 @@ import { expect, test } from "@playwright/test";
 
 import {
   cleanupExternalRequestMocks,
-  HYDRATION_TIMEOUT,
-  mockExternalRequests,
-  mockMapBackground,
-} from "../setup";
-import {
   dismissToasts,
+  HYDRATION_TIMEOUT,
   mockCatalogList,
+  mockExternalRequests,
   mockLocationSearch,
+  mockMapBackground,
   mockThesaurus,
-} from "./helpers";
+} from "../setup";
 
 test.describe("mobile map flows", () => {
   test.beforeEach(async ({ page }) => {
