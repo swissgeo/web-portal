@@ -49,7 +49,10 @@ const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
       </div>
 
       <template #content>
-        <div class="max-w-36 px-2 py-1 text-xs font-medium text-highlighted">
+        <div
+          class="px-2 py-1 text-xs font-medium text-highlighted"
+          :class="isDesktop ? 'max-w-36' : 'max-w-60'"
+        >
           <p>{{ t("toolbox.featureFlag.notAvailable") }}</p>
           <UButton
             :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
