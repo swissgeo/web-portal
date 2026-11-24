@@ -1,27 +1,15 @@
-import type { Page, Route } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import type BaseLayer from "ol/layer/Base";
 
 import { expect, test } from "@playwright/test";
-import { readFileSync } from "fs";
-
-import ChSwisstopoPixelkarteFarbeDataset from "../../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
-import ChSwisstopoPixelkarteFarbeDistribution from "../../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
-import ChWmtsGeoadmin from "../../fixtures/wmts-geoadminch.json" with { type: "json" };
-import { waitForZoom } from "../utils";
-const WMTSCapabilities = readFileSync(
-  new URL("../../fixtures/WMTSCapabilities.xml", import.meta.url),
-  "utf-8",
-);
-
-const tileFixture = readFileSync(
-  new URL("../../fixtures/tile.jpeg", import.meta.url),
-);
 
 import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
+  mockMapBackground,
   cleanupExternalRequestMocks,
 } from "../setup";
+import { waitForZoom } from "../utils";
 
 test.describe("map page", () => {
   const getZoom = async (page: Page) => {
@@ -30,61 +18,10 @@ test.describe("map page", () => {
     return zoom;
   };
 
-  const mockBackgroundRoutes = async (page: Page) => {
-    const mockBackgroundResponse = (route: Route) =>
-      route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDataset });
-
-    const mockWmtsResponse = (route: Route) =>
-      route.fulfill({ status: 200, json: ChWmtsGeoadmin });
-
-    // The actual mocks
-    await page.route(
-      "http://oar.test/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
-      mockWmtsResponse,
-    );
-
-    await page.route(
-      "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
-      (route) => {
-        return route.fulfill({
-          status: 200,
-          json: ChSwisstopoPixelkarteFarbeDistribution,
-        });
-      },
-    );
-
-    // we let all the backgrounds to return the data for pixelkarte-farbe
-    await page.route(
-      "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_*",
-      mockBackgroundResponse,
-    );
-
-    // Trailing `*` also matches ogc-client's query params
-    // (`?SERVICE=WMTS&REQUEST=GetCapabilities`) appended to the capabilities URL.
-    await page.route(
-      "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml*",
-      (route) =>
-        route.fulfill({
-          status: 200,
-          contentType: "application/xml",
-          body: WMTSCapabilities,
-        }),
-    );
-
-    // mock the tiles
-    await page.route("https://wmts.geo.admin.ch/1.0.0/**.jpeg", (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: "image/jpeg",
-        body: tileFixture,
-      }),
-    );
-  };
-
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
     // override the OAR routes
-    await mockBackgroundRoutes(page);
+    await mockMapBackground(page);
 
     await page.goto("/de/map");
     await expect(page.getByTestId("ol-map")).toBeVisible({

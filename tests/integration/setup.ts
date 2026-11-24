@@ -1,5 +1,11 @@
-import type { Page } from "@playwright/test";
+import type { Page, Route } from "@playwright/test";
 import type { Map as OlMapType } from "ol";
+
+import { readFileSync } from "fs";
+
+import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChWmtsGeoadmin from "../fixtures/wmts-geoadminch.json" with { type: "json" };
 
 declare global {
   interface Window {
@@ -9,6 +15,15 @@ declare global {
 
 // olmap takes a while to load, since the headless browser is slower
 export const HYDRATION_TIMEOUT = 50_000;
+
+const WMTSCapabilities = readFileSync(
+  new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
+  "utf-8",
+);
+
+const tileFixture = readFileSync(
+  new URL("../fixtures/tile.jpeg", import.meta.url),
+);
 
 /**
  * Mock external API requests so integration tests don't depend on real
@@ -103,4 +118,94 @@ export function mockExternalRequests(page: Page) {
 
 export async function cleanupExternalRequestMocks(page: Page) {
   await page.unrouteAll({ behavior: "wait" });
+}
+
+/**
+ * Mock the map background and the WMTS service of the pixelkarte layer, so the
+ * map renders and an added layer survives the WMTS capabilities loading.
+ */
+export async function mockMapBackground(page: Page) {
+  const mockBackgroundResponse = (route: Route) =>
+    route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDataset });
+
+  await page.route(
+    "http://oar.test/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
+    (route) => route.fulfill({ status: 200, json: ChWmtsGeoadmin }),
+  );
+
+  await page.route(
+    "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
+    (route) =>
+      route.fulfill({
+        status: 200,
+        json: ChSwisstopoPixelkarteFarbeDistribution,
+      }),
+  );
+
+  await page.route(
+    "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_*",
+    mockBackgroundResponse,
+  );
+
+  await page.route(
+    "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml*",
+    (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/xml",
+        body: WMTSCapabilities,
+      }),
+  );
+
+  await page.route("https://wmts.geo.admin.ch/1.0.0/**.jpeg", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "image/jpeg",
+      body: tileFixture,
+    }),
+  );
+}
+
+/**
+ * The catalog list request has a query string, while the item requests do not.
+ * A glob with `?` would also match the item paths, so match the query itself.
+ */
+export async function mockCatalogList(page: Page) {
+  await page.route(/\/swissgeo-catalog\/items\?/, (route) =>
+    route.fulfill({
+      status: 200,
+      json: {
+        type: "FeatureCollection",
+        features: [ChSwisstopoPixelkarteFarbeDataset],
+        links: [],
+        numberMatched: 1,
+      },
+    }),
+  );
+}
+
+export async function mockLocationSearch(page: Page) {
+  await page.route("**/SearchServer**", (route) =>
+    route.fulfill({ status: 200, json: { results: [] } }),
+  );
+}
+
+export async function mockThesaurus(page: Page) {
+  await page.route("http://thesaurus.test/**", (route) =>
+    route.fulfill({
+      status: 200,
+      json: { thesaurus_id: "ech0166", concepts: [] },
+    }),
+  );
+}
+
+/**
+ * The map reports a missing background with a persisting toast. It is not part
+ * of these flows and would cover the search results, so close it if it shows.
+ */
+export async function dismissToasts(page: Page) {
+  const close = page.locator('[data-slot="root"] [data-slot="close"]');
+  if (await close.count()) {
+    await close.first().click();
+  }
 }
