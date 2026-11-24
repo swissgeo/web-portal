@@ -29,7 +29,7 @@ const layerTranslationKey = computed(() =>
 
 <template>
   <button
-    class="group relative rounded-lg border-2 border-transparent hover:border-accent-active"
+    class="group relative rounded-lg border-2 border-transparent hover:border-accent-hover"
     :class="{ 'border-accent-active!': isCurrent }"
     type="button"
     :data-testid="testId"
@@ -52,7 +52,7 @@ const layerTranslationKey = computed(() =>
       ></div>
     </div>
     <div
-      class="bg-opacity-50 bg-accent absolute right-0 bottom-0 left-0 mx-1 mb-1 h-6 content-center rounded-sm px-2 text-left text-xs font-medium text-inverted group-hover:bg-accent-hover"
+      class="bg-opacity-50 bg-accent absolute right-0 bottom-0 left-0 mx-1 mb-1 content-center rounded-sm p-space-2xs text-left text-xs font-medium text-inverted group-hover:bg-accent-hover"
       :class="{ 'bg-accent-active': isCurrent }"
     >
       {{ layerTranslationKey }}

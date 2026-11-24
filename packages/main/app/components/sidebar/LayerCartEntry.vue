@@ -153,21 +153,25 @@ const legendLink = computed(() => {
 // Shared look of the buttons on the entry row
 const rowButton = {
   size: "xs",
-  color: "primary",
+  color: "accent",
   variant: "ghost",
-  ui: { base: "hover:text-primary-400 dark:hover:text-primary-200" },
 } as const;
+const largeIcon = { leadingIcon: "size-5" };
 </script>
 
 <template>
-  <li class="flex min-w-0 flex-col gap-2 rounded">
-    <div class="flex min-w-0 items-start">
+  <li
+    class="flex min-w-0 flex-col gap-2 rounded-sm"
+    :class="{ 'bg-elevated pb-2': isExpanded }"
+  >
+    <div class="flex min-w-0 items-start gap-1.5 py-1 pr-2 pl-1">
       <UButton
         data-testid="layer-reorder-handle"
         data-vaul-no-drag
-        class="layer-reorder-handle shrink-0 cursor-grab text-dimmed"
+        class="layer-reorder-handle shrink-0 cursor-grab"
         icon="i-lucide-grip-vertical"
         v-bind="rowButton"
+        :ui="largeIcon"
         :title="t('layers.reorder')"
         @keydown.up.prevent="moveUp()"
         @keydown.down.prevent="moveDown()"
@@ -175,20 +179,25 @@ const rowButton = {
       <UButton
         data-testid="layer-expand-toggle"
         class="shrink-0"
+        :class="{ 'text-accent-active': isExpanded }"
         :icon="isExpanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
         :aria-expanded="isExpanded"
         :aria-controls="detailsId"
         v-bind="rowButton"
+        :ui="largeIcon"
         @click="isExpanded = !isExpanded"
       />
       <button
         type="button"
-        class="min-w-0 flex-1 cursor-pointer px-1 text-left wrap-anywhere"
+        class="min-w-0 flex-1 cursor-pointer self-center text-left text-sm leading-small-text font-medium wrap-anywhere"
         :title="fullTitle"
         :aria-expanded="isExpanded"
         :aria-controls="detailsId"
-        :class="{ truncate: !isExpanded, 'text-dimmed': !layer.isVisible }"
+        :class="[
+          isExpanded ? 'text-accent-active' : 'text-accent truncate',
+          { 'text-dimmed!': !layer.isVisible },
+        ]"
         @click="isExpanded = !isExpanded"
       >
         {{ layer.displayName }}
@@ -219,7 +228,7 @@ const rowButton = {
     <div
       v-if="isExpanded"
       :id="detailsId"
-      class="flex min-w-0 flex-col gap-3 pl-8"
+      class="flex min-w-0 flex-col gap-3 pr-2 pl-8"
     >
       <LayerVariantSelect
         v-if="datasetLayer?.data.properties.aggregated"
@@ -228,7 +237,7 @@ const rowButton = {
         @select="selectVariant"
       />
       <div v-if="timeItems.length > 1" class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned">
+        <span class="text-tiny font-medium text-default">
           {{ t("layers.time") }}
         </span>
         <USelect
@@ -237,24 +246,24 @@ const rowButton = {
           :aria-label="t('layers.time')"
           data-vaul-no-drag
           :items="timeItems"
+          size="xs"
+          :ui="{ base: 'text-xs', trailingIcon: 'text-accent' }"
         />
       </div>
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned">
+        <span class="text-tiny font-medium text-default">
           {{ t("layers.opacity") }}
         </span>
-        <div class="flex items-center gap-2">
-          <USlider
-            data-vaul-no-drag
-            :model-value="opacityPercent"
-            @update:model-value="handleOpacityChange"
-            @wheel.prevent="handleWheel"
-            :min="0"
-            :max="100"
-            class="flex-1"
-          />
-          <span class="w-8 text-xs text-toned">{{ opacityPercent }}%</span>
-        </div>
+        <USlider
+          data-vaul-no-drag
+          :model-value="opacityPercent"
+          @update:model-value="handleOpacityChange"
+          @wheel.prevent="handleWheel"
+          :min="0"
+          :max="100"
+          size="xs"
+          :ui="{ track: 'h-1.5 bg-default', thumb: 'ring-1' }"
+        />
       </div>
       <LayerLegend :legends="legends" :detail-link="legendLink" />
     </div>

@@ -107,7 +107,8 @@ function selectBackground(backgroundLayer: Layer | null) {
               open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
             "
             :ui="{
-              base: 'bg-accented',
+              base: 'bg-accented px-2.5 py-1.5 text-highlighted',
+              trailingIcon: 'text-accent',
             }"
             block
           />

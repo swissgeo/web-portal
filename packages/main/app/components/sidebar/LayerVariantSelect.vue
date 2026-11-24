@@ -47,7 +47,7 @@ function onSelect(distributionId: string) {
 
 <template>
   <div v-if="items.length" class="flex flex-col gap-1">
-    <span class="text-xs font-medium text-toned">
+    <span class="text-tiny font-medium text-default">
       {{ t("layers.variant") }}
     </span>
     <UTooltip :text="distribution && variantLabel(distribution)">
@@ -56,7 +56,12 @@ function onSelect(distributionId: string) {
         data-vaul-no-drag
         :model-value="distribution?.id"
         :items="items"
-        :ui="{ itemLabel: 'whitespace-normal' }"
+        size="xs"
+        :ui="{
+          base: 'text-xs',
+          trailingIcon: 'text-accent',
+          itemLabel: 'whitespace-normal',
+        }"
         @update:model-value="onSelect"
       />
     </UTooltip>
