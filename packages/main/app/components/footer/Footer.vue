@@ -63,7 +63,7 @@ const mobileNavButtons = computed(() => [
 
 const wrapperClasses = computed(() => {
   return isDesktop.value
-    ? "text-accent absolute bottom-0 left-(--sidebar-width) right-0 z-50 flex h-8 items-center justify-between bg-muted px-1 text-tiny font-medium"
+    ? "text-accent absolute bottom-0 left-(--sidebar-width) right-0 z-50 flex min-h-8 items-center justify-between bg-muted px-1 text-tiny font-medium"
     : "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-center gap-2 bg-primary-50 dark:bg-primary-800 p-1";
 });
 </script>

@@ -30,7 +30,7 @@ const versionUrl = computed(() => {
       :class="
         mobile
           ? 'text-accent grid grid-cols-2 gap-2'
-          : 'flex items-center gap-x-4'
+          : 'flex flex-wrap items-center justify-end gap-x-4 gap-y-2'
       "
     >
       <ULink
