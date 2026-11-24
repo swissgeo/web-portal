@@ -51,6 +51,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     v-model:open="menuOpen"
     :auto-close="false"
     :ui="{
+      root: 'border-b-0',
       container:
         'max-w-full gap-1.5 lg:gap-10 bg-primary-50 dark:bg-primary-800',
       left: 'justify-between gap-10 grow lg:flex-initial lg:min-w-0',
@@ -92,13 +93,13 @@ const items = computed<NavigationMenuItem[]>(() => [
       :ui="{
         content: 'w-fit',
         list: 'gap-1.5',
-        link: 'text-nav-brand hover:before:bg-nav-brand-shade hover:text-nav-brand-hover data-active:before:bg-inverted data-active:text-inverted',
+        link: 'leading-small-text text-nav-brand hover:before:bg-nav-brand-shade hover:text-nav-brand-hover data-active:before:bg-primary-900 dark:data-active:before:bg-primary-100 data-active:text-nav-brand-inverted',
       }"
     />
 
     <template #right>
       <div class="hidden items-center gap-1.5 lg:flex">
-        <TopbarLanguageSwitcherButton size="lg" />
+        <TopbarLanguageSwitcherButton size="md" />
         <TopbarColorModeButton size="lg" />
       </div>
     </template>

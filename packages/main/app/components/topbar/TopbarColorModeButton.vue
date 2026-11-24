@@ -8,7 +8,7 @@ const { size = "sm" } = defineProps<{
   <ClientOnly>
     <UColorModeButton
       :size="size"
-      :ui="{ base: 'text-accent lg:text-nav-brand-muted' }"
+      :ui="{ base: 'text-accent lg:text-nav-brand-muted lg:px-2.5 lg:py-1.5' }"
     />
   </ClientOnly>
 </template>
