@@ -2,7 +2,7 @@
 # Container that contains basic configurations used by all other containers
 # It should only contain variables that don't change or change very infrequently
 # so that the cache is not needlessly invalidated
-FROM node:24-alpine AS base
+FROM node:26-alpine AS base
 ENV PORT=3000
 ENV HOST=0.0.0.0
 ENV USER=swissgeo
@@ -18,6 +18,8 @@ RUN    addgroup -S ${GROUP} \
 FROM base AS builder
 
 WORKDIR ${BUILD_DIR}
+
+RUN npm install -g corepack
 
 RUN corepack enable
 RUN corepack use pnpm@latest-11
