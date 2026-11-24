@@ -91,9 +91,24 @@ describe("Toolbox.vue", () => {
     );
   });
 
+  it("keeps the desktop toolbox on a narrow viewport while the mobile UI is off", () => {
+    isDesktop.value = false;
+    const wrapper = mountToolbox();
+
+    expect(
+      wrapper
+        .find("[data-testid='toolbox-right'] [data-stub='DrawButton']")
+        .exists(),
+    ).toBe(true);
+    expect(wrapper.findComponent({ name: "ResponsivePanel" }).exists()).toBe(
+      false,
+    );
+  });
+
   describe("on a mobile viewport", () => {
     beforeEach(() => {
       isDesktop.value = false;
+      enabledFlags.value = ["enableMobileUi"];
     });
 
     it("keeps only fullscreen and geolocation on the map, as icons", () => {
@@ -175,6 +190,7 @@ describe("Toolbox.vue", () => {
 
     it("leaves the remark out when all tools are available", () => {
       enabledFlags.value = [
+        "enableMobileUi",
         "tools.enableDrawing",
         "tools.enableMeasure",
         "tools.enableCompare",

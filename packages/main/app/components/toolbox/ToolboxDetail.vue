@@ -31,8 +31,6 @@ const isDesktop = useIsDesktop();
     <ReuseTemplate />
   </div>
 
-  <!-- The same drawer as the map panel, above the footer. Each tool shows
-       its own title and close button. -->
   <ResponsivePanel
     v-if="toolboxStore.activeDetailPanel && !isDesktop"
     :title="t(`toolbox.${toolboxStore.activeDetailPanel}.title`)"

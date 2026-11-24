@@ -31,8 +31,11 @@ const displayMode = inject(displayModeKey, "web");
 const isWebMode = computed(() => displayMode === "web");
 const isEmbedMode = computed(() => displayMode === "embed");
 // On a phone the map keeps fullscreen, geolocation and zoom. The other tools
-// open in a drawer from the footer.
-const isMobileLayout = computed(() => isWebMode.value && !isDesktop.value);
+// open in a drawer from the footer. A narrow desktop window keeps the desktop
+// toolbox while the mobile UI is off.
+const isMobileLayout = computed(
+  () => isWebMode.value && isEnabled("enableMobileUi") && !isDesktop.value,
+);
 
 // A tool panel opens its own drawer, so the tools drawer makes room for it.
 watch(
