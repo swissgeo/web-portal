@@ -100,7 +100,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
       content:
         'scroll-fade min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pb-4 [scrollbar-gutter:stable] lg:px-8 lg:pb-8',
       trigger:
-        'shrink-0 grow-0 px-2 pt-1 pb-2 first-of-type:pl-0 leading-small-text data-[state=active]:text-petrol-900 data-[state=inactive]:text-primary dark:data-[state=active]:text-petrol-50 dark:data-[state=inactive]:text-petrol-300',
+        'shrink-0 grow-0 px-2 pt-1 pb-2 first-of-type:pl-0 lg:first-of-type:pl-2 leading-small-text data-[state=active]:text-petrol-900 data-[state=inactive]:text-primary dark:data-[state=active]:text-petrol-50',
       indicator: 'bottom-0 bg-petrol-900 dark:bg-petrol-50',
     }"
     class="@container min-h-0 w-full flex-1 gap-4 lg:gap-8"
@@ -108,13 +108,15 @@ const serviceDistributions = computed<Distribution[]>(() => {
     <template #overview>
       <div
         v-if="dataset.properties.description || contacts.length"
-        class="flex flex-col gap-space-m"
+        class="flex flex-col gap-8"
       >
         <section
           v-if="dataset.properties.description"
           class="max-w-[37.3125rem]"
         >
-          <h3 class="mb-4 text-base font-semibold text-highlighted">
+          <h3
+            class="mb-4 text-base leading-normal font-semibold text-highlighted"
+          >
             {{ t("dataset.abstract") }}
           </h3>
           <DatasetDescription
@@ -129,7 +131,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
           data-testid="dataset-contacts"
         >
           <h3
-            class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+            class="mb-space-2xs text-xs font-medium tracking-wide text-dimmed uppercase"
           >
             {{ t("dataset.contact") }}
           </h3>
@@ -144,9 +146,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
     <template #legend>
       <section>
-        <h3
-          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
-        >
+        <h3 class="mb-4 text-lg font-semibold text-highlighted lg:text-xl">
           {{ t("layers.legend.title") }}
         </h3>
         <ErrorPill v-if="distributionError">

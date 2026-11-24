@@ -31,7 +31,7 @@ const protocol = computed(() => {
 
 <template>
   <div
-    class="grid grid-cols-[minmax(0,1fr)_auto] gap-space-xs px-space-xs py-4 text-sm font-medium @2xl:grid-cols-[7rem_minmax(0,1fr)_auto] @2xl:p-space-s @2xl:font-normal"
+    class="grid grid-cols-[minmax(0,1fr)_auto] gap-space-xs px-space-xs py-4 text-sm leading-small-text font-medium @2xl:min-h-13 @2xl:grid-cols-[7rem_minmax(0,1fr)_auto] @2xl:px-space-s @2xl:py-4"
   >
     <p class="wrap-anywhere">
       {{ protocol }}
@@ -65,7 +65,7 @@ const protocol = computed(() => {
             :to="address"
             target="_blank"
             icon="i-lucide-external-link"
-            color="primary"
+            color="accent"
             variant="ghost"
             :aria-label="t('dataset.openService')"
             data-testid="dataset-service-open"

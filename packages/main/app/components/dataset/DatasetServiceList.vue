@@ -35,20 +35,20 @@ const groups = computed(() => [
 </script>
 
 <template>
-  <div class="flex flex-col gap-space-m">
+  <div class="flex flex-col gap-8">
     <template v-for="group in groups" :key="group.label">
       <section
         v-if="group.distributions.length"
         v-show="group.distributions.some(isVisible)"
       >
         <h4
-          class="mb-space-xs text-base font-semibold text-highlighted @2xl:text-sm"
+          class="mb-4 text-base leading-normal font-semibold text-highlighted"
         >
           {{ t(group.label) }}
         </h4>
         <div class="rounded-md border border-accented">
           <div
-            class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-accented p-space-s text-xs font-semibold @2xl:grid"
+            class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-accented px-space-s py-3.5 text-sm font-bold text-highlighted @2xl:grid"
             aria-hidden="true"
           >
             <span>{{ t("dataset.format") }}</span>
@@ -59,6 +59,7 @@ const groups = computed(() => [
               v-for="distribution in group.distributions"
               :key="distribution.id"
               v-show="isVisible(distribution)"
+              class="hover:bg-elevated"
             >
               <DatasetService
                 :distribution="distribution"

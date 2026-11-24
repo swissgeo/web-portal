@@ -61,7 +61,7 @@ const rows = computed((): ContactRow[] => {
     size="md"
     class="wrap-anywhere"
     :ui="{
-      name: 'font-bold',
+      name: 'font-bold text-default leading-small-text',
       description: 'leading-small-text',
     }"
   >
@@ -79,7 +79,7 @@ const rows = computed((): ContactRow[] => {
         :key="row.href"
         :to="row.href"
         target="_blank"
-        class="mt-space-2xs flex items-center gap-space-xs text-sm font-medium text-primary"
+        class="mt-space-2xs flex items-center gap-space-xs text-sm leading-small-text font-medium text-primary"
       >
         <UIcon :name="row.icon" class="size-4 shrink-0" />{{ row.label }}
       </ULink>
