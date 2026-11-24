@@ -97,8 +97,9 @@ const selected = computed({
       expanded-icon="i-lucide-chevron-down"
       color="accent"
       :ui="{
-        listWithChildren: 'border-s-0',
-        link: 'items-start px-2 py-1 text-start font-medium text-accent not-data-selected:hover:text-accent-hover data-expanded:text-accent-active data-selected:text-accent-active',
+        listWithChildren: 'border-s-0 ms-6',
+        item: 'not-first:mt-0.5',
+        link: 'items-start py-1 pr-2 pl-1 text-start leading-small-text font-medium text-accent not-data-selected:hover:text-accent-hover hover:before:bg-accent-50 dark:hover:before:bg-accent-800 data-expanded:text-accent-active data-selected:text-accent-active data-selected:before:bg-accent-100 dark:data-selected:before:bg-accent-800',
         linkLabel: 'whitespace-normal!',
         linkTrailing: 'hidden',
       }"

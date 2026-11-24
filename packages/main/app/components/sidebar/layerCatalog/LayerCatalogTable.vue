@@ -51,7 +51,7 @@ useInfiniteScroll(scroller, loadMore, {
         <div
           role="columnheader"
           aria-colspan="2"
-          class="col-span-2 flex h-12 items-center px-2"
+          class="col-span-2 flex h-12 items-center px-3"
         >
           {{ t("layerCatalog.table.dataOwner") }}
         </div>
@@ -68,7 +68,9 @@ useInfiniteScroll(scroller, loadMore, {
             icon="i-lucide-search"
             :placeholder="t('layerCatalog.searchPlaceholder')"
             variant="outline"
+            size="lg"
             class="w-full"
+            :ui="{ base: 'text-sm/5 font-medium' }"
           >
             <template v-if="query" #trailing>
               <UButton
