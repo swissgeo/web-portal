@@ -129,7 +129,7 @@ describe("Toolbox.vue", () => {
       );
     });
 
-    it("shows the tools only in the tools drawer", async () => {
+    it("shows the tools only in the tools drawer, without import and print", async () => {
       const wrapper = mountToolbox();
       expect(wrapper.find("[data-stub='DrawButton']").exists()).toBe(false);
 
@@ -141,11 +141,12 @@ describe("Toolbox.vue", () => {
         "DrawButton",
         "MeasureButton",
         "CompareSliderButton",
-        "ImportButton",
         "ShareButton",
-        "PrintButton",
       ]) {
         expect(tools.find(`[data-stub='${name}']`).exists()).toBe(true);
+      }
+      for (const name of ["ImportButton", "PrintButton"]) {
+        expect(wrapper.find(`[data-stub='${name}']`).exists()).toBe(false);
       }
     });
 
@@ -177,9 +178,7 @@ describe("Toolbox.vue", () => {
         "tools.enableDrawing",
         "tools.enableMeasure",
         "tools.enableCompare",
-        "tools.enableImport",
         "tools.enableShare",
-        "tools.enablePrint",
       ];
       useSidebarStore().setSidebar(SidebarType.TOOLS);
 

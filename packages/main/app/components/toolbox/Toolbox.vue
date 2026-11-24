@@ -48,16 +48,15 @@ watch(
   },
 );
 
-// The tools drawer says once that some of its tools follow later
+// The tools drawer says once that some of its tools follow later. Import and
+// print are left out on a phone.
 const hasUnavailableTools = computed(() =>
   (
     [
       [toolboxStore.showDrawButton, "tools.enableDrawing"],
       [toolboxStore.showMeasureButton, "tools.enableMeasure"],
       [toolboxStore.showCompareSliderButton, "tools.enableCompare"],
-      [toolboxStore.showImportButton, "tools.enableImport"],
       [toolboxStore.showShareButton, "tools.enableShare"],
-      [toolboxStore.showPrintButton, "tools.enablePrint"],
     ] as const
   ).some(([isShown, flag]) => isShown && !isEnabled(flag)),
 );
@@ -84,9 +83,9 @@ const [DefineTools, Tools] = createReusableTemplate();
     <DrawButton v-if="toolboxStore.showDrawButton" />
     <MeasureButton v-if="toolboxStore.showMeasureButton" />
     <CompareSliderButton v-if="toolboxStore.showCompareSliderButton" />
-    <ImportButton v-if="toolboxStore.showImportButton" />
+    <ImportButton v-if="toolboxStore.showImportButton && !isMobileLayout" />
     <ShareButton v-if="toolboxStore.showShareButton" />
-    <PrintButton v-if="toolboxStore.showPrintButton" />
+    <PrintButton v-if="toolboxStore.showPrintButton && !isMobileLayout" />
   </DefineTools>
 
   <template v-if="isMobileLayout">
