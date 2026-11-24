@@ -34,8 +34,7 @@
     "type-check": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@opentelemetry/api": "catalog:",
-    "@opentelemetry/api-logs": "catalog:"
+    "@opentelemetry/api": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",

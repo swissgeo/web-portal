@@ -1,9 +1,8 @@
 /** @module swissgeo/log */
 
-import type { LogAttributes } from "@opentelemetry/api-logs";
+import type { Attributes } from "@opentelemetry/api";
 
-import { context } from "@opentelemetry/api";
-import { logs, SeverityNumber } from "@opentelemetry/api-logs";
+import { context, logs, SeverityNumber } from "@opentelemetry/api";
 /** A log level reference. The levels correspond to the native console methods and their log level. */
 export enum LogLevel {
   Error,
@@ -94,7 +93,7 @@ function processStyle(messages: SwissGeoLogInput[]): SwissGeoLogInput[] {
  */
 function emitOtelLog(level: LogLevel, messages: SwissGeoLogInput[]) {
   const parts: string[] = [];
-  const attributes: LogAttributes = {};
+  const attributes: Attributes = {};
 
   for (const input of messages) {
     if (input && typeof input === "object" && "messages" in input) {
