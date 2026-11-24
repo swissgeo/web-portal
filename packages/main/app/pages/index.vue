@@ -44,11 +44,17 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
 
 const infoPortalUrl = computed(() => cmsUrl());
 
-// Defined here so the three card buttons below can reuse it.
-// Below lg, only the icon shows. Screen readers still read the label.
-const cardButtonUi = {
-  base: "max-lg:bg-transparent max-lg:text-primary max-lg:hover:bg-primary/10 max-lg:active:bg-primary/10",
-  label: "max-lg:sr-only",
+const cardUi = {
+  root: "rounded-[calc(var(--ui-radius)*2.5)] lg:w-1/3",
+  container: "p-6",
+  leading: "mb-2",
+  title: "text-xl leading-small-text",
+  description: "mt-2 text-base leading-small-text font-medium text-default",
+  footer: "ml-auto pt-8",
+};
+const outlineCardUi = {
+  ...cardUi,
+  root: `${cardUi.root} cursor-pointer hover:bg-elevated hover:ring-0`,
 };
 
 async function goToMap(openGeoCatalogTree = false): Promise<void> {
@@ -61,7 +67,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
 
 <template>
   <div class="relative h-full">
-    <div id="hero" class="relative h-9/10 overflow-hidden lg:h-168">
+    <div id="hero" class="relative h-9/10 overflow-hidden lg:h-[42.4375rem]">
       <img
         src="/images/hero.webp"
         class="absolute h-full w-full translate-y-20 scale-200 object-cover brightness-38 lg:translate-y-0 lg:scale-100"
@@ -82,7 +88,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
             >
               {{ t("landing.footer.claim") }}
             </h1>
-            <p class="text-lg font-medium text-white">
+            <p class="text-lg leading-small-text font-medium text-white">
               {{ t("landing.footer.description") }}
             </p>
           </div>
@@ -94,6 +100,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
               <TopbarSearch
                 class="w-full"
                 :skip-mobile="true"
+                large
                 @selected="goToMap()"
                 @coordinates-detected="goToMap()"
               />
@@ -106,33 +113,32 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pt-8 pb-16 lg:p-8 lg:pb-16"
     >
       <div>
-        <p class="mb-4 text-xl font-semibold lg:text-3xl">SWISSGEO</p>
-        <p class="text-base font-medium">
+        <p class="mb-4 text-xl font-semibold text-highlighted lg:text-3xl">
+          SWISSGEO
+        </p>
+        <p class="text-base leading-small-text font-medium text-highlighted">
           {{ t("landing.body.who") }}
         </p>
       </div>
-      <div class="flex flex-col gap-4 lg:flex-row">
+      <div class="flex flex-col gap-4 lg:flex-row lg:gap-8">
         <UPageCard
           :title="t('landing.cards.map.title')"
           :description="t('landing.cards.map.description')"
           icon="i-lucide-map"
           variant="outline"
-          :ui="{
-            root: 'lg:w-1/3 cursor-pointer',
-            container: 'p-6',
-            footer: 'ml-auto pt-8 lg:pt-4',
-            title: 'text-xl',
-            description: 'text-base font-medium text-default',
-          }"
+          :ui="outlineCardUi"
           @click="goToMap()"
         >
           <template #footer>
             <UButton
-              trailing-icon="i-lucide-arrow-right"
-              :label="t('landing.cards.map.button')"
-              :ui="cardButtonUi"
+              icon="i-lucide-arrow-right"
+              variant="link"
+              class="px-space-xs py-space-2xs"
+              :ui="{ leadingIcon: 'size-5' }"
               data-testid="landing-map-button"
-            />
+            >
+              <span class="sr-only">{{ t("landing.cards.map.button") }}</span>
+            </UButton>
           </template>
         </UPageCard>
         <UPageCard
@@ -140,21 +146,20 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :description="t('landing.cards.catalog.description')"
           icon="i-lucide-list-todo"
           variant="outline"
-          :ui="{
-            root: 'lg:w-1/3 cursor-pointer',
-            container: 'p-6',
-            footer: 'ml-auto pt-8 lg:pt-4',
-            title: 'text-xl',
-            description: 'text-base font-medium text-default',
-          }"
+          :ui="outlineCardUi"
           @click="goToMap(true)"
         >
           <template #footer>
             <UButton
-              trailing-icon="i-lucide-arrow-right"
-              :label="t('landing.cards.catalog.button')"
-              :ui="cardButtonUi"
-            />
+              icon="i-lucide-arrow-right"
+              variant="link"
+              class="px-space-xs py-space-2xs"
+              :ui="{ leadingIcon: 'size-5' }"
+            >
+              <span class="sr-only">{{
+                t("landing.cards.catalog.button")
+              }}</span>
+            </UButton>
           </template>
         </UPageCard>
         <UPageCard
@@ -165,19 +170,19 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           variant="soft"
           target="_blank"
           :ui="{
-            root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
-            container: 'p-6',
-            footer: 'ml-auto pt-8 lg:pt-4',
-            title: 'text-xl',
-            description: 'text-base font-medium text-default',
+            ...cardUi,
+            root: `${cardUi.root} bg-primary-50 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700`,
           }"
         >
           <template #footer>
             <UButton
-              trailing-icon="i-lucide-external-link"
-              :label="t('landing.cards.info.button')"
-              :ui="cardButtonUi"
-            />
+              icon="i-lucide-external-link"
+              variant="link"
+              class="px-space-xs py-space-2xs"
+              :ui="{ leadingIcon: 'size-5' }"
+            >
+              <span class="sr-only">{{ t("landing.cards.info.button") }}</span>
+            </UButton>
           </template>
         </UPageCard>
       </div>
@@ -185,7 +190,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     <UFooter
       :ui="{
         container:
-          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto]',
+          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto] lg:gap-x-8',
         left: 'hidden',
         right:
           'flex-col lg:items-start lg:justify-start lg:order-1 lg:row-span-2 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:grid-rows-subgrid',
@@ -195,17 +200,17 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     >
       <template #right>
         <p
-          class="w-full text-2xl font-semibold lg:col-start-1 lg:row-start-1 lg:self-end"
+          class="w-full text-2xl leading-heading font-semibold lg:col-start-1 lg:row-start-1 lg:self-end"
         >
           SWISSGEO<br />{{ t("landing.footer.claim") }}
         </p>
         <p
-          class="mt-4 w-full text-sm font-medium lg:col-start-1 lg:row-start-2"
+          class="mt-4 w-full text-sm leading-small-text font-medium lg:col-start-1 lg:row-start-2"
         >
           {{ t("landing.footer.description") }}
         </p>
         <p
-          class="mt-8 w-full text-lg font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
+          class="mt-8 w-full text-lg leading-normal font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
         >
           {{ t("landing.footer.followUs") }}
         </p>
@@ -220,7 +225,9 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           }"
         />
       </template>
-      <p class="w-full text-lg font-semibold lg:row-start-1 lg:self-end">
+      <p
+        class="w-full text-lg leading-normal font-semibold lg:row-start-1 lg:self-end"
+      >
         {{ t("landing.footer.moreInformation") }}
       </p>
       <UNavigationMenu
@@ -235,7 +242,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       />
     </UFooter>
     <div
-      class="flex flex-col gap-8 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
+      class="flex flex-col gap-8 bg-neutral-50 px-4 py-8 text-sm leading-small-text font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
     >
       <div
         class="text-accent grid grid-cols-2 gap-4 lg:flex lg:w-1/2 lg:flex-row lg:items-center"
@@ -244,7 +251,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           variant="link"
           color="error"
           size="md"
-          class="mb-4 gap-1 px-0 lg:mr-12 lg:mb-0 lg:text-left"
+          class="mb-4 gap-1.5 px-0 lg:mr-12 lg:mb-0 lg:text-left"
           :to="reportIssuePortalUrl"
           target="_blank"
           external

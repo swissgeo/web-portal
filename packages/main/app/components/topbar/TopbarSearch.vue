@@ -18,8 +18,10 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 import SearchCategory from "./SearchCategory.vue";
 
 const emit = defineEmits(["selected", "coordinates-detected"]);
-const { skipMobile = false } = defineProps<{
+const { skipMobile = false, large = false } = defineProps<{
   skipMobile?: boolean;
+  // the bigger field of the home page
+  large?: boolean;
 }>();
 
 const { t, locale } = useI18n();
@@ -422,7 +424,12 @@ function clearSearch() {
         @keydown.enter.prevent="submitCoordinate"
         :ui="{
           // the placeholder disappears as soon as the field is clicked into
-          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! text-ellipsis dark:bg-primary-950',
+          base: [
+            'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! text-ellipsis dark:bg-primary-950',
+            large && 'py-3 ps-11 pe-4',
+          ],
+          leading: large ? 'ps-4' : undefined,
+          trailing: large ? 'pe-4' : undefined,
           leadingIcon: 'text-nav-brand-muted',
         }"
         v-bind="$attrs"
