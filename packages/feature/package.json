@@ -46,5 +46,5 @@
   "peerDependencies": {
     "pinia": "catalog:"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@12.23.0"
 }
