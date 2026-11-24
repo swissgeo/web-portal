@@ -16,7 +16,7 @@ export default defineAppConfig({
               "space-3xl",
               "space-gutter",
             ],
-            shadow: ["drop-lg"],
+            shadow: ["drop-lg", "drop-right-lg"],
           },
         },
       },

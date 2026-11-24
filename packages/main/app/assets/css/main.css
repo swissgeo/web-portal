@@ -38,6 +38,8 @@
 
   --shadow-drop-lg:
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+  --shadow-drop-right-lg:
+    10px 0 7.5px rgb(0 0 0 / 0.1), 4px 0 3px rgb(0 0 0 / 0.05);
 
   --spacing-space-3xs: 0.125rem;
   --spacing-space-2xs: 0.25rem;
