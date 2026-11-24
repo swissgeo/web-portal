@@ -164,7 +164,7 @@ defineExpose({
   <DatasetNotMappableHint :show-hint="!isMappable">
     <li
       ref="item"
-      class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
+      class="flex items-center gap-1.5 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
       :class="
         isMappable
           ? 'text-accent cursor-pointer hover:bg-muted focus-visible:text-highlighted'
@@ -206,7 +206,7 @@ defineExpose({
           :data-testid="`search-result-info-${index}`"
           :aria-label="t('search.viewDataset')"
           icon="i-lucide-info"
-          color="primary"
+          color="accent"
           variant="ghost"
           size="xs"
           :to="detailPath"

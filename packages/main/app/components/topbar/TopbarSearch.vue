@@ -400,7 +400,10 @@ function clearSearch() {
       onOpenAutoFocus: (event: Event) => event.preventDefault(),
     }"
     :dismissible="true"
-    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96 max-sm:min-w-0' }"
+    :ui="{
+      content:
+        'w-(--reka-popper-anchor-width) min-w-96 max-sm:min-w-0 shadow-drop-lg',
+    }"
   >
     <template #anchor>
       <UInput
@@ -427,10 +430,11 @@ function clearSearch() {
         <template v-if="query" #trailing>
           <UButton
             icon="i-lucide-circle-x"
-            color="primary"
-            variant="ghost"
+            color="neutral"
+            variant="link"
             size="xs"
             aria-label="Clear search"
+            :ui="{ leadingIcon: 'size-6 text-accent' }"
             @click="clearSearch"
           />
         </template>
