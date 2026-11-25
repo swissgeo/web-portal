@@ -120,12 +120,7 @@ watch(
         :isVisible="isVisible"
         @close="uiStore.closeSidebar()"
       >
-        <div
-          v-show="!isBackgroundListOpen"
-          class="flex min-h-0 flex-1 flex-col"
-        >
-          <LayerCart :mapLayers="mapLayers" />
-        </div>
+        <LayerCart :mapLayers="mapLayers" :isHidden="isBackgroundListOpen" />
         <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
         <template v-if="!isDesktop" #footer>
           <div

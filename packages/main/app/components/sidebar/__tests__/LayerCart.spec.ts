@@ -181,4 +181,16 @@ describe("LayerCart.vue", () => {
 
     expect(mapViewStore.setLayerIndex).not.toHaveBeenCalled();
   });
+
+  it("hides the header and the list without removing the layers", async () => {
+    const wrapper = mountCart();
+    const header = () => wrapper.get(".sticky");
+    const list = () => wrapper.get("[data-testid='layer-cart']");
+
+    await wrapper.setProps({ isHidden: true });
+
+    expect(header().attributes("style")).toContain("display: none");
+    expect(list().attributes("style")).toContain("display: none");
+    expect(wrapper.findAll("li")).toHaveLength(3);
+  });
 });

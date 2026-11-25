@@ -42,7 +42,11 @@ function mountSideBar(
     global: {
       provide: { [panelSnapPointKey]: panelSnapPoint },
       stubs: {
-        LayerCart: true,
+        LayerCart: {
+          name: "LayerCart",
+          props: ["mapLayers", "isHidden"],
+          template: "<div />",
+        },
         LayerCatalog: true,
         ResponsivePanel: {
           name: "ResponsivePanel",
@@ -322,17 +326,16 @@ describe("SideBar", () => {
     it("hides the cart while the background list is open, so the tile list fits the drawer", async () => {
       const wrapper = mountSideBar();
       const cart = wrapper.findComponent({ name: "LayerCart" });
-      const cartBox = () => cart.element.parentElement as HTMLElement;
       const background = wrapper
         .getComponent({ name: "ResponsivePanel" })
         .getComponent({ name: "BackgroundSelector" });
 
-      expect(cartBox().style.display).toBe("");
+      expect(cart.props("isHidden")).toBe(false);
 
       background.vm.$emit("update:open", true);
       await nextTick();
 
-      expect(cartBox().style.display).toBe("none");
+      expect(cart.props("isHidden")).toBe(true);
       expect(
         wrapper
           .getComponent({ name: "ResponsivePanel" })
@@ -347,7 +350,7 @@ describe("SideBar", () => {
       background.vm.$emit("update:open", false);
       await nextTick();
 
-      expect(cartBox().style.display).toBe("");
+      expect(cart.props("isHidden")).toBe(false);
       expect(
         wrapper
           .getComponent({ name: "ResponsivePanel" })

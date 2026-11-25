@@ -12,8 +12,9 @@ import LayerCartEntry from "./LayerCartEntry.vue";
 const { t } = useI18n();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
-const { mapLayers } = defineProps<{
+const { mapLayers, isHidden = false } = defineProps<{
   mapLayers: Ref<MapLayer[]>;
+  isHidden?: boolean;
 }>();
 
 // The store keeps the layers bottom-to-top, the panel shows them top-to-bottom,
@@ -74,6 +75,7 @@ function openLayerCatalog() {
   <!-- In the mobile drawer the whole cart scrolls, so the header sticks like
        the other panel headers -->
   <div
+    v-show="!isHidden"
     class="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-default bg-default px-4 py-3"
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
@@ -95,6 +97,7 @@ function openLayerCatalog() {
   </div>
 
   <ul
+    v-show="!isHidden"
     ref="layerCartRef"
     @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
