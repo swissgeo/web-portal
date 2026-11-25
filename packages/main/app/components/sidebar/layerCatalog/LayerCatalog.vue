@@ -71,6 +71,7 @@ provide(
           variant="ghost"
           block
           trailing-icon="i-lucide-chevron-right"
+          data-testid="catalog-tree-open"
           @click="mobileView = 'tree'"
         >
           {{ currentLabel }}
