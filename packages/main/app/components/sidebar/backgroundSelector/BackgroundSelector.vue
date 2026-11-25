@@ -88,7 +88,6 @@ function selectBackground(backgroundLayer: Layer | null) {
     }"
   >
     <UFormField
-      class="group"
       :label="t('backgroundLayers.label')"
       :ui="{
         label: 'text-xs',

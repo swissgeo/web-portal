@@ -66,6 +66,21 @@ export function useDrawerFooterFrame(
     }
   }
 
+  function measureContent(scroller: HTMLElement) {
+    // scrollHeight never gets lower than the box, so measure where the content ends.
+    // A hidden content sits above the scroller top and must not shrink the result.
+    const lastRow = scroller.lastElementChild;
+    if (!lastRow) {
+      return 0;
+    }
+    return Math.max(
+      0,
+      lastRow.getBoundingClientRect().bottom -
+        scroller.getBoundingClientRect().top +
+        scroller.scrollTop,
+    );
+  }
+
   function fitToContent() {
     const footer = container.value?.querySelector<HTMLElement>(
       '[data-slot="footer"]',
@@ -79,35 +94,27 @@ export function useDrawerFooterFrame(
     ) {
       return;
     }
-    // scrollHeight never gets lower than the box, so measure where the content ends.
-    // A hidden content sits above the scroller top and must not shrink the result.
-    const lastRow = scroller.value.lastElementChild;
-    const scrollerContentHeight = lastRow
-      ? Math.max(
-          0,
-          lastRow.getBoundingClientRect().bottom -
-            scroller.value.getBoundingClientRect().top +
-            scroller.value.scrollTop,
-        )
-      : 0;
-    const contentHeight =
-      container.value.offsetTop + scrollerContentHeight + footer.offsetHeight;
+    const containerElement = container.value;
+    const drawerElement = drawer.value;
     // vaul places a px snap point this far above the bottom of the window
-    const snapHeight =
-      contentHeight + window.innerHeight - drawer.value.offsetHeight;
+    const snapPointFor = (contentHeight: number) =>
+      contentHeight + window.innerHeight - drawerElement.offsetHeight;
+    const snapHeight = snapPointFor(
+      containerElement.offsetTop +
+        measureContent(scroller.value) +
+        footer.offsetHeight,
+    );
+    const footerSnapHeight = snapPointFor(
+      containerElement.offsetTop + footer.offsetHeight,
+    );
     // The footer cannot scroll, so it may open the drawer past the partial
     // limit when the rest of the content would only be scrolled away.
-    const footerSnapHeight =
-      container.value.offsetTop +
-      footer.offsetHeight +
-      window.innerHeight -
-      drawer.value.offsetHeight;
-    const keepsFooterVisible =
-      drawer.value.offsetHeight > 0 &&
-      footerSnapHeight > options.maxSnapHeight() &&
-      snapHeight <= window.innerHeight;
+    const maxSnapHeight = options.maxSnapHeight();
+    const footerNeedsMoreRoom =
+      drawerElement.offsetHeight > 0 && footerSnapHeight > maxSnapHeight;
     contentSnapHeight.value =
-      snapHeight < options.maxSnapHeight() || keepsFooterVisible
+      snapHeight < maxSnapHeight ||
+      (footerNeedsMoreRoom && snapHeight <= window.innerHeight)
         ? snapHeight
         : null;
     followDrawer();

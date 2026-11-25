@@ -64,13 +64,15 @@ const fullSnapPoint = 1;
 // panels can either close or only shrink.
 // measure for non closing panels (height - 200) :  header  + footer +  draghandle.
 const minimizedSnapPoint = "200px";
-const snapPoints = computed(() =>
-  isFooterExpanded
-    ? [partialSnapPoint.value]
-    : isDismissible
-      ? [partialSnapPoint.value, fullSnapPoint]
-      : [minimizedSnapPoint, partialSnapPoint.value, fullSnapPoint],
-);
+const snapPoints = computed(() => {
+  if (isFooterExpanded) {
+    return [partialSnapPoint.value];
+  }
+  if (!isDismissible) {
+    return [minimizedSnapPoint, partialSnapPoint.value, fullSnapPoint];
+  }
+  return [partialSnapPoint.value, fullSnapPoint];
+});
 const sharedSnapPoint = inject(
   panelSnapPointKey,
   ref<number | string | null>(null),
@@ -78,9 +80,9 @@ const sharedSnapPoint = inject(
 
 // The expanded footer must also shrink a panel that was fully open
 watch(
-  [() => isFooterExpanded, partialSnapPoint, () => isVisible],
-  ([expanded, partial, visible]) => {
-    if (expanded && visible !== false) {
+  [() => isFooterExpanded, partialSnapPoint],
+  ([expanded, partial]) => {
+    if (expanded) {
       sharedSnapPoint.value = partial;
     }
   },
