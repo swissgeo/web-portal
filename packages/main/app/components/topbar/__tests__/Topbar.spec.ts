@@ -54,7 +54,7 @@ function mountTopbar() {
           props: ["open", "autoClose"],
           emits: ["update:open"],
           template:
-            '<header><slot name="left" /><slot /><div data-testid="desktop"><slot name="right" /></div><div data-testid="mobile"><slot name="body" /></div></header>',
+            '<header><slot name="left" /><slot /><div data-testid="desktop"><slot name="right" /></div><div data-testid="mobile"><slot name="content" :close="() => $emit(\'update:open\', false)" /></div></header>',
         },
       },
     },
@@ -103,6 +103,22 @@ describe("Topbar", () => {
       );
     },
   );
+
+  it("shows the menu title and closes the menu with its close button", async () => {
+    const wrapper = mountTopbar();
+    const mobile = wrapper.get('[data-testid="mobile"]');
+
+    expect(mobile.text()).toContain("topbar.menu");
+    const closeButton = mobile.getComponent({ name: "UButton" });
+    expect(closeButton.attributes("aria-label")).toBe("topbar.closeMenu");
+
+    closeButton.vm.$emit("click");
+    await nextTick();
+
+    expect(
+      wrapper.getComponent({ name: "UHeader" }).emitted("update:open"),
+    ).toEqual([[false]]);
+  });
 
   it("links the logo to the landing page", () => {
     const wrapper = mountTopbar();

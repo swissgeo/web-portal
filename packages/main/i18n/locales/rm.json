@@ -605,6 +605,8 @@
   "topbar": {
     "home": "Pagina iniziala",
     "map": "Charta",
+    "menu": "Menu",
+    "closeMenu": "Serrar il menu",
     "geoDataAndMaps": "Geodatas e chartas",
     "howToUseGeodata": "Co poss jau utilisar las geodatas?",
     "viewGeodataInMapViewer": "Guardar las geodatas en il visualisatur da chartas",

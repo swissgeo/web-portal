@@ -9,11 +9,11 @@ const isDesktop = useIsDesktop();
 const localePath = useLocalePath();
 const route = useRoute();
 const isDatasetOpen = computed(() => route.meta.datasetDetail === true);
-// The DetailView opens on top of the map, so the map button is active there
 const isMapActive = computed(
   () =>
     isDatasetOpen.value ||
-    (sidebarStore.isLayerCartVisible && !sidebarStore.isGeocatalogTreeVisible),
+    !sidebarStore.isSidebarOpen ||
+    sidebarStore.isLayerCartVisible,
 );
 const isCatalogActive = computed(
   () => sidebarStore.isGeocatalogTreeVisible && !isDatasetOpen.value,
@@ -86,7 +86,7 @@ const wrapperClasses = computed(() => {
           inset
           close
           :ui="{
-            content: 'mb-[70px] inset-x-0 rounded-none',
+            content: 'mb-12 inset-x-0 rounded-none',
             title: 'text-base',
           }"
           :title="t('footer.mobileNav.mapInfo')"

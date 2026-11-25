@@ -605,6 +605,8 @@
   "topbar": {
     "home": "Pagina iniziale",
     "map": "Mappa",
+    "menu": "Menu",
+    "closeMenu": "Chiudi il menu",
     "geoDataAndMaps": "Geodati e mappe",
     "howToUseGeodata": "Come posso utilizzare i geodati?",
     "viewGeodataInMapViewer": "Visualizza i geodati nel visualizzatore di mappe",
