@@ -78,7 +78,6 @@ const sharedSnapPoint = inject(
   ref<number | string | null>(null),
 );
 
-// The expanded footer must also shrink a panel that was fully open
 watch(
   [() => isFooterExpanded, partialSnapPoint],
   ([expanded, partial]) => {

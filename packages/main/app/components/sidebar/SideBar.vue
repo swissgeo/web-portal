@@ -19,6 +19,16 @@ const panelSnapPoint = inject(panelSnapPointKey, ref(null));
 // On mobile the open background list takes the whole drawer, the cart comes back
 // when the panel closes or shows another sidebar.
 const isBackgroundListOpen = ref(false);
+const snapPointBeforeBackgroundList = ref<number | string | null>(null);
+
+function setBackgroundListOpen(open: boolean) {
+  if (open) {
+    snapPointBeforeBackgroundList.value = panelSnapPoint.value;
+  } else if (uiStore.currentSidebar === SidebarType.LAYER_CART && isVisible) {
+    panelSnapPoint.value = snapPointBeforeBackgroundList.value;
+  }
+  isBackgroundListOpen.value = open;
+}
 watch(
   () => uiStore.currentSidebar,
   (sidebar) => {
@@ -122,7 +132,10 @@ watch(
             :class="!isBackgroundListOpen ? 'border-t border-default' : ''"
             class="px-2 py-4"
           >
-            <BackgroundSelector v-model:open="isBackgroundListOpen" />
+            <BackgroundSelector
+              :open="isBackgroundListOpen"
+              @update:open="setBackgroundListOpen"
+            />
           </div>
         </template>
       </ResponsivePanel>

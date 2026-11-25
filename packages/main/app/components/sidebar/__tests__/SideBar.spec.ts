@@ -360,6 +360,41 @@ describe("SideBar", () => {
       ).toBe(false);
     });
 
+    it("returns to the snap point it had before the background list opened", async () => {
+      const panelSnapPoint = ref<number | string | null>(1);
+      const wrapper = mountSideBar(true, panelSnapPoint);
+      const background = wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" });
+
+      background.vm.$emit("update:open", true);
+      await nextTick();
+      panelSnapPoint.value = "520px";
+
+      background.vm.$emit("update:open", false);
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBe(1);
+    });
+
+    it("keeps the snap point a closed panel had when another sidebar opens", async () => {
+      const panelSnapPoint = ref<number | string | null>(1);
+      const wrapper = mountSideBar(true, panelSnapPoint);
+      wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" })
+        .vm.$emit("update:open", true);
+      await nextTick();
+      panelSnapPoint.value = "520px";
+
+      sidebar.currentSidebar = "geocatalogTree";
+      await nextTick();
+      sidebar.currentSidebar = "layerCart";
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBeNull();
+    });
+
     it("closes the background list when the panel shows another sidebar", async () => {
       const wrapper = mountSideBar();
       wrapper
