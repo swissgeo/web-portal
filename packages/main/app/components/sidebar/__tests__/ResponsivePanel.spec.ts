@@ -76,10 +76,16 @@ function mountPanel(
   });
 }
 
-function mountPanelWithFooter(itemCount = 1, isVisible = true) {
+function mountPanelWithFooter(
+  itemCount = 1,
+  isVisible = true,
+  contentVersion = 0,
+  sharedSnapPoint?: Ref<number | string | null>,
+) {
   return mount(ResponsivePanel, {
     props: {
       itemCount,
+      contentVersion,
       isVisible,
       title: "Map",
       closeLabel: "Close",
@@ -90,7 +96,10 @@ function mountPanelWithFooter(itemCount = 1, isVisible = true) {
       default: PanelContent,
       footer: "<p data-testid='footer'>footer</p>",
     },
-    global: { stubs },
+    global: {
+      stubs,
+      provide: sharedSnapPoint ? { [panelSnapPointKey]: sharedSnapPoint } : {},
+    },
   });
 }
 
@@ -98,6 +107,7 @@ function mountPanelWithFooter(itemCount = 1, isVisible = true) {
 function layOut(
   wrapper: ReturnType<typeof mountPanelWithFooter>,
   contentHeight: number,
+  footerHeight = 100,
 ) {
   const drawer = wrapper.get("[data-testid='drawer']").element as HTMLElement;
   const container = wrapper.get("[data-slot='container']")
@@ -109,7 +119,7 @@ function layOut(
     getAnimations: { value: () => [] },
   });
   Object.defineProperty(container, "offsetTop", { value: 20 });
-  Object.defineProperty(footer, "offsetHeight", { value: 100 });
+  Object.defineProperty(footer, "offsetHeight", { value: footerHeight });
   setContentHeight(wrapper, contentHeight);
   container.getBoundingClientRect = () => ({ top: 400 }) as DOMRect;
   return { drawer, container };
@@ -471,6 +481,94 @@ describe("ResponsivePanel.vue", () => {
         expect(
           wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
         ).toEqual(["380px", 1]);
+      });
+
+      it("measures the content again when the footer changes", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 60);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+        setContentHeight(wrapper, 100);
+        await wrapper.setProps({ contentVersion: 1 });
+        await flushPromises();
+
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual(["380px", 1]);
+      });
+
+      it("grows past the partial limit when the footer alone needs it", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 0, 500);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        // 20 + 500 footer, placed 768 - 608 above the window bottom
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual(["680px", 1]);
+      });
+
+      it("does not shrink for content that is hidden", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 0);
+        // A hidden content sits above the scroller, so its bottom is 0
+        scroller(wrapper).getBoundingClientRect = () =>
+          ({ top: 400 }) as DOMRect;
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual(["280px", 1]);
+      });
+
+      it("offers only the measured height while the footer is open", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 0, 500);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        await wrapper.setProps({ isFooterExpanded: true });
+        await flushPromises();
+
+        const drawer = wrapper.getComponent({ name: "UDrawer" });
+        expect(drawer.props("snapPoints")).toEqual(["680px"]);
+        expect(drawer.props("activeSnapPoint")).toBe("680px");
+      });
+
+      it("shrinks a fully open drawer down to the footer height", async () => {
+        const sharedSnapPoint = ref<number | string | null>(1);
+        const wrapper = mountPanelWithFooter(1, true, 0, sharedSnapPoint);
+        await flushPromises();
+        layOut(wrapper, 0, 500);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        await wrapper.setProps({ isFooterExpanded: true });
+        await flushPromises();
+
+        expect(sharedSnapPoint.value).toBe("680px");
+      });
+
+      it("does not expand from the keyboard button while the footer is open", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 0, 500);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+        await wrapper.setProps({ isFooterExpanded: true });
+        await flushPromises();
+
+        await wrapper.get("button.sr-only").trigger("click");
+
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("activeSnapPoint"),
+        ).toBe("680px");
       });
     });
 

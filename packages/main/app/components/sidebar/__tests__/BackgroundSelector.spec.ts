@@ -29,10 +29,11 @@ function mountSelector() {
     global: {
       stubs: {
         UFormField: { template: "<div><slot /></div>" },
-        UPopover: {
-          name: "UPopover",
-          props: ["reference", "content"],
-          template: "<div><slot :open='false' /><slot name='content' /></div>",
+        UCollapsible: {
+          name: "UCollapsible",
+          props: ["open"],
+          emits: ["update:open"],
+          template: "<div><slot :open='open' /><slot name='content' /></div>",
         },
         UButton: {
           props: ["label"],
@@ -50,14 +51,15 @@ function mountSelector() {
 }
 
 describe("BackgroundSelector.vue", () => {
-  it("opens the tile list above the whole selector box", async () => {
+  it("opens and closes the tile list through the collapsible", async () => {
     const wrapper = mountSelector();
-    // The box ref is set after the first render
-    await nextTick();
-    const popover = wrapper.getComponent({ name: "UPopover" });
+    const collapsible = wrapper.getComponent({ name: "UCollapsible" });
+    expect(collapsible.props("open")).toBe(false);
 
-    expect(popover.props("content")).toEqual({ side: "top" });
-    expect(popover.props("reference")).toBe(wrapper.element);
+    collapsible.vm.$emit("update:open", true);
+    await nextTick();
+
+    expect(collapsible.props("open")).toBe(true);
   });
 
   it("picks the background of a tile", async () => {
