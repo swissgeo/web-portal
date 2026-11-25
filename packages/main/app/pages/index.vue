@@ -44,6 +44,13 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
 
 const infoPortalUrl = computed(() => cmsUrl());
 
+// Defined here so the three card buttons below can reuse it.
+// Below lg, only the icon shows. Screen readers still read the label.
+const cardButtonUi = {
+  base: "max-lg:bg-transparent max-lg:text-primary max-lg:hover:bg-primary/10 max-lg:active:bg-primary/10",
+  label: "max-lg:sr-only",
+};
+
 async function goToMap(openGeoCatalogTree = false): Promise<void> {
   if (openGeoCatalogTree) {
     uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
@@ -112,7 +119,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           variant="outline"
           :ui="{
             root: 'lg:w-1/3 cursor-pointer',
-            footer: 'ml-auto',
+            container: 'p-6',
+            footer: 'ml-auto pt-8 lg:pt-4',
             title: 'text-xl',
             description: 'text-base font-medium text-default',
           }"
@@ -121,10 +129,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           <template #footer>
             <UButton
               trailing-icon="i-lucide-arrow-right"
+              :label="t('landing.cards.map.button')"
+              :ui="cardButtonUi"
               data-testid="landing-map-button"
-            >
-              {{ t("landing.cards.map.button") }}
-            </UButton>
+            />
           </template>
         </UPageCard>
         <UPageCard
@@ -134,16 +142,19 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           variant="outline"
           :ui="{
             root: 'lg:w-1/3 cursor-pointer',
-            footer: 'ml-auto',
+            container: 'p-6',
+            footer: 'ml-auto pt-8 lg:pt-4',
             title: 'text-xl',
             description: 'text-base font-medium text-default',
           }"
           @click="goToMap(true)"
         >
           <template #footer>
-            <UButton trailing-icon="i-lucide-arrow-right">
-              {{ t("landing.cards.catalog.button") }}
-            </UButton>
+            <UButton
+              trailing-icon="i-lucide-arrow-right"
+              :label="t('landing.cards.catalog.button')"
+              :ui="cardButtonUi"
+            />
           </template>
         </UPageCard>
         <UPageCard
@@ -155,15 +166,18 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           target="_blank"
           :ui="{
             root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
-            footer: 'ml-auto',
+            container: 'p-6',
+            footer: 'ml-auto pt-8 lg:pt-4',
             title: 'text-xl',
             description: 'text-base font-medium text-default',
           }"
         >
           <template #footer>
-            <UButton trailing-icon="i-lucide-external-link">
-              {{ t("landing.cards.info.button") }}
-            </UButton>
+            <UButton
+              trailing-icon="i-lucide-external-link"
+              :label="t('landing.cards.info.button')"
+              :ui="cardButtonUi"
+            />
           </template>
         </UPageCard>
       </div>
