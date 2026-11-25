@@ -16,11 +16,16 @@ const uiStore = useSidebarStore();
 
 // The map panel opens partially, so the map stays visible while layers change
 const panelSnapPoint = inject(panelSnapPointKey, ref(null));
+// On mobile the open background list takes the whole drawer, the cart comes back
+// when the panel closes or shows another sidebar.
+const isBackgroundListOpen = ref(false);
 watch(
   () => uiStore.currentSidebar,
   (sidebar) => {
     if (sidebar === SidebarType.LAYER_CART) {
       panelSnapPoint.value = null;
+    } else {
+      isBackgroundListOpen.value = false;
     }
   },
 );
@@ -33,6 +38,15 @@ const { mapLayers, isVisible = true } = defineProps<{
 defineSlots<{
   "bottom-controls"?: () => unknown;
 }>();
+
+watch(
+  () => isVisible,
+  (shown) => {
+    if (!shown) {
+      isBackgroundListOpen.value = false;
+    }
+  },
+);
 
 const isDesktop = useIsDesktop();
 // On mobile the cart and the catalog are bottom drawers, side column
@@ -91,14 +105,24 @@ watch(
         :collapseLabel="t('layerCart.collapse')"
         :hasHeader="false"
         :itemCount="mapLayers.value.length"
+        :contentVersion="isBackgroundListOpen ? 1 : 0"
+        :isFooterExpanded="isBackgroundListOpen"
         :isVisible="isVisible"
         @close="uiStore.closeSidebar()"
       >
-        <LayerCart :mapLayers="mapLayers" />
+        <div
+          v-show="!isBackgroundListOpen"
+          class="flex min-h-0 flex-1 flex-col"
+        >
+          <LayerCart :mapLayers="mapLayers" />
+        </div>
         <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
         <template v-if="!isDesktop" #footer>
-          <div class="border-t border-default px-2 py-4">
-            <BackgroundSelector />
+          <div
+            :class="!isBackgroundListOpen ? 'border-t border-default' : ''"
+            class="px-2 py-4"
+          >
+            <BackgroundSelector v-model:open="isBackgroundListOpen" />
           </div>
         </template>
       </ResponsivePanel>

@@ -17,6 +17,8 @@ export function useDrawerFooterFrame(
     isVisible: () => boolean;
     // A change measures the content height again, opening an item does not
     itemCount: () => number | undefined;
+    // A change measures the content height again, e.g. when the footer grows
+    contentVersion: () => number | undefined;
     // The drawer opens at most this high, in px from the bottom of the window
     maxSnapHeight: () => number;
     activeSnapPoint: Readonly<Ref<unknown>>;
@@ -77,20 +79,37 @@ export function useDrawerFooterFrame(
     ) {
       return;
     }
-    // scrollHeight never gets lower than the box, so measure where the content ends
+    // scrollHeight never gets lower than the box, so measure where the content ends.
+    // A hidden content sits above the scroller top and must not shrink the result.
     const lastRow = scroller.value.lastElementChild;
     const scrollerContentHeight = lastRow
-      ? lastRow.getBoundingClientRect().bottom -
-        scroller.value.getBoundingClientRect().top +
-        scroller.value.scrollTop
+      ? Math.max(
+          0,
+          lastRow.getBoundingClientRect().bottom -
+            scroller.value.getBoundingClientRect().top +
+            scroller.value.scrollTop,
+        )
       : 0;
     const contentHeight =
       container.value.offsetTop + scrollerContentHeight + footer.offsetHeight;
     // vaul places a px snap point this far above the bottom of the window
     const snapHeight =
       contentHeight + window.innerHeight - drawer.value.offsetHeight;
+    // The footer cannot scroll, so it may open the drawer past the partial
+    // limit when the rest of the content would only be scrolled away.
+    const footerSnapHeight =
+      container.value.offsetTop +
+      footer.offsetHeight +
+      window.innerHeight -
+      drawer.value.offsetHeight;
+    const keepsFooterVisible =
+      drawer.value.offsetHeight > 0 &&
+      footerSnapHeight > options.maxSnapHeight() &&
+      snapHeight <= window.innerHeight;
     contentSnapHeight.value =
-      snapHeight < options.maxSnapHeight() ? snapHeight : null;
+      snapHeight < options.maxSnapHeight() || keepsFooterVisible
+        ? snapHeight
+        : null;
     followDrawer();
   }
 
@@ -103,9 +122,13 @@ export function useDrawerFooterFrame(
   useEventListener(drawer, "pointerup", () => setPressed(false));
   useEventListener(drawer, "pointercancel", () => setPressed(false));
   useEventListener(window, "resize", fitToContent);
-  watch([scroller, options.itemCount, options.isVisible], fitToContent, {
-    flush: "post",
-  });
+  // An expanding footer measures too small while its animation runs
+  useEventListener(container, "animationend", fitToContent);
+  watch(
+    [scroller, options.itemCount, options.contentVersion, options.isVisible],
+    fitToContent,
+    { flush: "post" },
+  );
   watch(options.activeSnapPoint, followDrawer);
 
   return { drawer };
