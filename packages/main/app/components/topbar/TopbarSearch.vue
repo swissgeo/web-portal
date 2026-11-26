@@ -440,6 +440,7 @@ function clearSearch() {
             color="neutral"
             variant="link"
             size="xs"
+            class="p-0"
             aria-label="Clear search"
             :ui="{ leadingIcon: 'size-6 text-accent' }"
             @click="clearSearch"
