@@ -484,7 +484,6 @@
       "tabPosition": "Coordinatas",
       "tabShare": "Parter la posiziun",
       "errorFetchingElevation": "Errur durant chargiar l'autezza",
-      "errorFetchingW3W": "Errur durant chargiar l'adressa What3Words",
       "featureFlag": {
         "notAvailable": "La fanestra da posiziun n'è anc betg disponibla.",
         "workingOnIt": "El suonda en ina versiun posteriura."

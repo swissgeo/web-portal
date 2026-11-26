@@ -139,7 +139,6 @@ export default defineNuxtConfig({
     defaultLocale: "de",
   },
   runtimeConfig: {
-    what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
     reportIssueServiceUrl: "",
     livingdocsApiEndpoint: "",

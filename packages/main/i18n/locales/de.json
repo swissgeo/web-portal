@@ -484,7 +484,6 @@
       "tabPosition": "Koordinaten",
       "tabShare": "Position teilen",
       "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
-      "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse",
       "featureFlag": {
         "notAvailable": "Das Positions-Fenster ist noch nicht verfügbar.",
         "workingOnIt": "Es folgt in einer späteren Version."

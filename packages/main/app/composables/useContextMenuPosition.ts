@@ -51,19 +51,6 @@ export function useContextMenuPosition(
   });
 
   const {
-    data: w3wData,
-    pending: w3wPending,
-    execute: executeW3w,
-  } = useFetch("/api/wpa/v1/what3words/convert-to-3wa", {
-    query: latLon,
-    immediate: false,
-    watch: false,
-    onResponseError: ({ error }) => {
-      log.error(`Error fetching what3words value: ${String(error)}`);
-    },
-  });
-
-  const {
     data: elevationData,
     pending: elevationPending,
     execute: executeElevation,
@@ -78,12 +65,11 @@ export function useContextMenuPosition(
 
   watch(latLon, (val) => {
     if (val) {
-      void executeW3w();
       void executeElevation();
     }
   });
 
-  const isLoading = computed(() => w3wPending.value || elevationPending.value);
+  const isLoading = computed(() => elevationPending.value);
 
   const elevationFormatted = computed<string | null>(() => {
     const raw = elevationData.value?.height;
@@ -105,8 +91,6 @@ export function useContextMenuPosition(
       return [];
     }
 
-    const w3wWords =
-      w3wData.value?.words ?? t("map.contextMenuPopup.errorFetchingW3W");
     const elevation =
       elevationFormatted.value ??
       t("map.contextMenuPopup.errorFetchingElevation");
@@ -130,11 +114,6 @@ export function useContextMenuPosition(
       {
         label: MGRSFormat.label,
         value: coordinateFormat(MGRSFormat, coord, proj),
-      },
-      {
-        label: "what3words",
-        labelLink: (value: string) => `https://what3words.com/${value}`,
-        value: w3wWords,
       },
       {
         label: t("map.contextMenuPopup.elevation"),
