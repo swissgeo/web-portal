@@ -45,9 +45,10 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
 const infoPortalUrl = computed(() => cmsUrl());
 
 const cardUi = {
-  root: "rounded-[calc(var(--ui-radius)*2.5)] lg:w-1/3",
+  root: "group rounded-[calc(var(--ui-radius)*2.5)] lg:w-1/3",
   container: "p-6",
   leading: "mb-2",
+  leadingIcon: "group-hover:text-btn-hover",
   title: "text-xl leading-small-text",
   description: "mt-2 text-base leading-small-text font-medium text-default",
   footer: "ml-auto pt-8",
@@ -133,7 +134,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
             <UButton
               icon="i-lucide-arrow-right"
               variant="link"
-              class="px-space-xs py-space-2xs"
+              class="px-space-xs py-space-2xs group-hover:text-btn-hover hover:text-btn-hover"
               :ui="{ leadingIcon: 'size-5' }"
               data-testid="landing-map-button"
             >
@@ -153,7 +154,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
             <UButton
               icon="i-lucide-arrow-right"
               variant="link"
-              class="px-space-xs py-space-2xs"
+              class="px-space-xs py-space-2xs group-hover:text-btn-hover hover:text-btn-hover"
               :ui="{ leadingIcon: 'size-5' }"
             >
               <span class="sr-only">{{
@@ -178,7 +179,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
             <UButton
               icon="i-lucide-external-link"
               variant="link"
-              class="px-space-xs py-space-2xs"
+              class="px-space-xs py-space-2xs group-hover:text-btn-hover hover:text-btn-hover"
               :ui="{ leadingIcon: 'size-5' }"
             >
               <span class="sr-only">{{ t("landing.cards.info.button") }}</span>
