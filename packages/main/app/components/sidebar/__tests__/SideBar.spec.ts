@@ -42,16 +42,32 @@ function mountSideBar(
     global: {
       provide: { [panelSnapPointKey]: panelSnapPoint },
       stubs: {
-        LayerCart: true,
+        LayerCart: {
+          name: "LayerCart",
+          props: ["mapLayers", "isHidden"],
+          template: "<div />",
+        },
         LayerCatalog: true,
         ResponsivePanel: {
           name: "ResponsivePanel",
-          props: ["title", "closeLabel", "isVisible", "hasHeader"],
+          props: [
+            "title",
+            "closeLabel",
+            "isVisible",
+            "hasHeader",
+            "contentVersion",
+            "isFooterExpanded",
+          ],
           emits: ["close"],
           template: "<section><slot /><slot name='footer' /></section>",
         },
         USeparator: true,
-        BackgroundSelector: true,
+        BackgroundSelector: {
+          name: "BackgroundSelector",
+          props: ["open"],
+          emits: ["update:open"],
+          template: "<div />",
+        },
         ...stubs,
       },
     },
@@ -305,6 +321,101 @@ describe("SideBar", () => {
       expect(
         mountSideBar().findComponent({ name: "BackgroundSelector" }).exists(),
       ).toBe(true);
+    });
+
+    it("hides the cart while the background list is open, so the tile list fits the drawer", async () => {
+      const wrapper = mountSideBar();
+      const cart = wrapper.findComponent({ name: "LayerCart" });
+      const background = wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" });
+
+      expect(cart.props("isHidden")).toBe(false);
+
+      background.vm.$emit("update:open", true);
+      await nextTick();
+
+      expect(cart.props("isHidden")).toBe(true);
+      expect(
+        wrapper
+          .getComponent({ name: "ResponsivePanel" })
+          .props("contentVersion"),
+      ).toBe(1);
+      expect(
+        wrapper
+          .getComponent({ name: "ResponsivePanel" })
+          .props("isFooterExpanded"),
+      ).toBe(true);
+
+      background.vm.$emit("update:open", false);
+      await nextTick();
+
+      expect(cart.props("isHidden")).toBe(false);
+      expect(
+        wrapper
+          .getComponent({ name: "ResponsivePanel" })
+          .props("contentVersion"),
+      ).toBe(0);
+      expect(
+        wrapper
+          .getComponent({ name: "ResponsivePanel" })
+          .props("isFooterExpanded"),
+      ).toBe(false);
+    });
+
+    it("returns to the snap point it had before the background list opened", async () => {
+      const panelSnapPoint = ref<number | string | null>(1);
+      const wrapper = mountSideBar(true, panelSnapPoint);
+      const background = wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" });
+
+      background.vm.$emit("update:open", true);
+      await nextTick();
+      panelSnapPoint.value = "520px";
+
+      background.vm.$emit("update:open", false);
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBe(1);
+    });
+
+    it("keeps the snap point a closed panel had when another sidebar opens", async () => {
+      const panelSnapPoint = ref<number | string | null>(1);
+      const wrapper = mountSideBar(true, panelSnapPoint);
+      wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" })
+        .vm.$emit("update:open", true);
+      await nextTick();
+      panelSnapPoint.value = "520px";
+
+      sidebar.currentSidebar = "geocatalogTree";
+      await nextTick();
+      sidebar.currentSidebar = "layerCart";
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBeNull();
+    });
+
+    it("closes the background list when the panel shows another sidebar", async () => {
+      const wrapper = mountSideBar();
+      wrapper
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" })
+        .vm.$emit("update:open", true);
+      await nextTick();
+
+      sidebar.currentSidebar = "geocatalogTree";
+      await nextTick();
+      sidebar.currentSidebar = "layerCart";
+      await nextTick();
+
+      expect(
+        wrapper
+          .getComponent({ name: "ResponsivePanel" })
+          .props("contentVersion"),
+      ).toBe(0);
     });
 
     it("closes the sidebar when the cart panel is closed", () => {

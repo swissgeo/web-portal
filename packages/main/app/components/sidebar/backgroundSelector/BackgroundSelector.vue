@@ -14,8 +14,7 @@ import {
 const { locale, t } = useI18n();
 const layerStore = useLayerStore();
 const currentBackground = computed(() => layerStore.backgroundLayer);
-// The tile list is as wide as the whole gray box, not only the button
-const selectorBox = useTemplateRef<HTMLElement>("selectorBox");
+const open = defineModel<boolean>("open", { default: false });
 
 const currentBackgroundLabel = computed(() =>
   t(getBackgroundTranslationKey(currentBackground.value)),
@@ -81,51 +80,41 @@ function selectBackground(backgroundLayer: Layer | null) {
 </script>
 
 <template>
-  <div ref="selectorBox" class="w-full rounded-lg bg-elevated p-2">
+  <UCollapsible
+    v-model:open="open"
+    class="flex w-full flex-col-reverse gap-4 rounded-lg bg-elevated"
+    :ui="{
+      root: 'p-2',
+    }"
+  >
     <UFormField
       :label="t('backgroundLayers.label')"
       :ui="{
         label: 'text-xs',
       }"
     >
-      <!-- The tile list opens over the drawer content, so every background stays reachable -->
-      <UPopover
-        :reference="selectorBox ?? undefined"
-        :content="{ side: 'top' }"
+      <UButton
+        data-testid="background-selector-toggle"
+        :label="currentBackgroundLabel"
+        color="neutral"
+        variant="subtle"
+        :trailing-icon="open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
         :ui="{
-          content:
-            'max-h-(--reka-popover-content-available-height) w-(--reka-popper-anchor-width) overflow-y-auto bg-elevated p-2',
+          base: 'bg-accented',
         }"
-      >
-        <template #default="{ open }">
-          <UButton
-            data-testid="background-selector-toggle"
-            :label="currentBackgroundLabel"
-            color="neutral"
-            variant="subtle"
-            :trailing-icon="
-              open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
-            "
-            :ui="{
-              base: 'bg-accented',
-            }"
-            block
-          />
-        </template>
-        <template #content>
-          <div class="grid h-56 grid-cols-2 gap-2">
-            <BackgroundSelectorEntry
-              v-for="(backgroundLayer, idx) in sortedBackgroundLayersWithNull"
-              :key="idx"
-              :backgroundLayer="backgroundLayer"
-              :isCurrent="
-                backgroundLayer?.layerUrl === currentBackground?.layerUrl
-              "
-              @click="selectBackground(backgroundLayer)"
-            />
-          </div>
-        </template>
-      </UPopover>
+        block
+      />
     </UFormField>
-  </div>
+    <template #content>
+      <div class="grid h-56 grid-cols-2 gap-2">
+        <BackgroundSelectorEntry
+          v-for="(backgroundLayer, idx) in sortedBackgroundLayersWithNull"
+          :key="idx"
+          :backgroundLayer="backgroundLayer"
+          :isCurrent="backgroundLayer?.layerUrl === currentBackground?.layerUrl"
+          @click="selectBackground(backgroundLayer)"
+        />
+      </div>
+    </template>
+  </UCollapsible>
 </template>

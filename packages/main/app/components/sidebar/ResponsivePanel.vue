@@ -12,6 +12,8 @@ const {
   isDismissible = true,
   hasOwnScroller = false,
   itemCount,
+  contentVersion,
+  isFooterExpanded = false,
   collapseLabel,
   expandLabel,
 } = defineProps<{
@@ -26,6 +28,10 @@ const {
   hasOwnScroller?: boolean;
   // A change measures the content height again, opening an item does not
   itemCount?: number;
+  // A change measures the content height again, e.g. when the footer grows
+  contentVersion?: number;
+  // The footer takes the whole panel, so the drawer keeps its measured height
+  isFooterExpanded?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -58,14 +64,28 @@ const fullSnapPoint = 1;
 // panels can either close or only shrink.
 // measure for non closing panels (height - 200) :  header  + footer +  draghandle.
 const minimizedSnapPoint = "200px";
-const snapPoints = computed(() =>
-  isDismissible
-    ? [partialSnapPoint.value, fullSnapPoint]
-    : [minimizedSnapPoint, partialSnapPoint.value, fullSnapPoint],
-);
+const snapPoints = computed(() => {
+  if (isFooterExpanded) {
+    return [partialSnapPoint.value];
+  }
+  if (!isDismissible) {
+    return [minimizedSnapPoint, partialSnapPoint.value, fullSnapPoint];
+  }
+  return [partialSnapPoint.value, fullSnapPoint];
+});
 const sharedSnapPoint = inject(
   panelSnapPointKey,
   ref<number | string | null>(null),
+);
+
+watch(
+  [() => isFooterExpanded, partialSnapPoint],
+  ([expanded, partial]) => {
+    if (expanded) {
+      sharedSnapPoint.value = partial;
+    }
+  },
+  { immediate: true },
 );
 const hasSharedSnapPoint = computed(
   () =>
@@ -94,6 +114,9 @@ const resizeLabel = computed(() =>
 );
 
 function toggleExpanded() {
+  if (isFooterExpanded) {
+    return;
+  }
   activeSnapPoint.value = isFullyExtended.value
     ? partialSnapPoint.value
     : fullSnapPoint;
@@ -106,7 +129,11 @@ provide(panelScrollerKey, scroller);
 // (https://bugs.webkit.org/show_bug.cgi?id=176205). A fully open panel keeps
 // the field above the keyboard.
 useEventListener(scroller, "focusin", (focusEvent: FocusEvent) => {
-  if (!isDesktop.value && focusEvent.target instanceof HTMLInputElement) {
+  if (
+    !isDesktop.value &&
+    !isFooterExpanded &&
+    focusEvent.target instanceof HTMLInputElement
+  ) {
     activeSnapPoint.value = fullSnapPoint;
   }
 });
@@ -147,6 +174,7 @@ const { drawer } = useDrawerFooterFrame(scroller, contentSnapHeight, {
   isEnabled: () => !!slots.footer && !isDesktop.value,
   isVisible: () => isVisible,
   itemCount: () => itemCount,
+  contentVersion: () => contentVersion,
   maxSnapHeight: () => defaultPartialSnapPoint * window.innerHeight,
   activeSnapPoint,
 });
