@@ -186,6 +186,31 @@ describe("Footer.vue", () => {
       },
     );
 
+    it("opens the tools drawer on the map and highlights it", async () => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(SidebarType.LAYER_CART);
+      const wrapper = mountFooter();
+
+      await navButton(wrapper, "tools").trigger("click");
+
+      expect(sidebarStore.currentSidebar).toBe(SidebarType.TOOLS);
+      expect(navigateTo).toHaveBeenCalledWith("/de/map");
+      expect(navButton(wrapper, "tools").props("variant")).toBe(
+        "solid-inverted",
+      );
+      expect(navButton(wrapper, "map").props("variant")).toBe("ghost-inverted");
+    });
+
+    it("closes the tools drawer when it is already shown", async () => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(SidebarType.TOOLS);
+
+      await navButton(mountFooter(), "tools").trigger("click");
+
+      expect(sidebarStore.isSidebarOpen).toBe(false);
+      expect(navigateTo).not.toHaveBeenCalled();
+    });
+
     it("highlights neither map nor catalog when another sidebar is shown", () => {
       useSidebarStore().setSidebar(SidebarType.CONTENT);
 

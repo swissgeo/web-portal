@@ -219,6 +219,11 @@
     "outsideSwitzerland": "Votre position se trouve hors de Suisse et ne peut pas être affichée sur la carte."
   },
   "toolbox": {
+    "mobileDrawer": {
+      "close": "Fermer",
+      "expand": "Agrandir le panneau",
+      "collapse": "Réduire le panneau"
+    },
     "geolocation": {
       "buttonTitle": "Position"
     },
@@ -449,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "Cet outil n'est pas encore disponible.",
       "workingOnIt": "Il suivra dans une version ultérieure.",
+      "someNotAvailable": "Certains outils ne sont pas encore disponibles.",
+      "someWorkingOnIt": "Ils suivront dans une version ultérieure.",
       "links": {
         "roadmap": "geoplateforme-perspectives"
       }

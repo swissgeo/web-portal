@@ -8,6 +8,8 @@ export enum SidebarType {
   LAYER_CART = "layerCart",
   GEOCATALOG_TREE = "geocatalogTree",
   CONTENT = "content",
+  // Mobile only: the toolbox drawer opened from the footer
+  TOOLS = "tools",
 }
 
 export const useSidebarStore = defineStore("sidebar", () => {

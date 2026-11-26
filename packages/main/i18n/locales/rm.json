@@ -219,6 +219,11 @@
     "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
   },
   "toolbox": {
+    "mobileDrawer": {
+      "close": "Serrar",
+      "expand": "Engrondir il panel",
+      "collapse": "Reducir il panel"
+    },
     "geolocation": {
       "buttonTitle": "Posiziun"
     },
@@ -449,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
       "workingOnIt": "El suonda en ina versiun posteriura.",
+      "someNotAvailable": "Intgins utensils n'èn anc betg disponibels.",
+      "someWorkingOnIt": "Els suondan en ina versiun posteriura.",
       "links": {
         "roadmap": "geoplattform-ausblick"
       }

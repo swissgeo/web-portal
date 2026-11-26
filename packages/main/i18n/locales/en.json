@@ -219,6 +219,11 @@
     "outsideSwitzerland": "Your location is outside of Switzerland and cannot be shown on the map."
   },
   "toolbox": {
+    "mobileDrawer": {
+      "close": "Close",
+      "expand": "Expand panel",
+      "collapse": "Collapse panel"
+    },
     "geolocation": {
       "buttonTitle": "Location"
     },
@@ -449,6 +454,8 @@
     "featureFlag": {
       "notAvailable": "This tool is not available yet.",
       "workingOnIt": "It will follow in a later version.",
+      "someNotAvailable": "Some tools are not available yet.",
+      "someWorkingOnIt": "They will follow in a later version.",
       "links": {
         "roadmap": "geoplatform-outlook"
       }

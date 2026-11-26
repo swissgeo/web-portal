@@ -8,6 +8,8 @@ import { useGeolocationStore } from "@/stores/geolocation";
 
 const dispatcher: ActionDispatcher = { name: "GeolocButton.vue" };
 
+const { iconOnly = false } = defineProps<{ iconOnly?: boolean }>();
+
 const { t } = useI18n();
 const geolocationStore = useGeolocationStore();
 
@@ -23,6 +25,7 @@ function toggleGeolocation(): void {
     :is-disabled="geolocationStore.denied"
     :is-active="geolocationStore.active"
     iconName="locate"
+    :icon-only="iconOnly"
     @click="toggleGeolocation()"
   />
 </template>

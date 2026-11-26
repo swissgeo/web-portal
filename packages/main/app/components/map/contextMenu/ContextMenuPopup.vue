@@ -79,21 +79,34 @@ watch(
   </div>
   <div
     v-else
-    class="light overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
+    class="overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
     @click.stop
   >
-    <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>
-    <UButton
-      :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
-      variant="link"
-      size="xs"
-      target="_blank"
-      class="mt-2"
-      :ui="{
-        base: 'p-0',
-      }"
-    >
-      {{ t("map.contextMenuPopup.featureFlag.workingOnIt") }}
-    </UButton>
+    <div class="flex items-start justify-between gap-2">
+      <div>
+        <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>
+        <UButton
+          :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
+          variant="link"
+          size="xs"
+          target="_blank"
+          class="mt-2"
+          :ui="{
+            base: 'p-0',
+          }"
+        >
+          {{ t("map.contextMenuPopup.featureFlag.workingOnIt") }}
+        </UButton>
+      </div>
+      <UButton
+        icon="i-lucide-x"
+        color="neutral"
+        variant="ghost"
+        square
+        size="xs"
+        data-testid="context-menu-disabled-close"
+        @click="close"
+      />
+    </div>
   </div>
 </template>
