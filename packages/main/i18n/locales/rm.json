@@ -735,5 +735,23 @@
       "termsOfUse": "nutzungs-und-betriebsbestimmungen",
       "contact": "impressum-de"
     }
+  },
+  "geogesser": {
+    "title": "Geogesser",
+    "close": "Serrar il gieu",
+    "total": "Total: {points}",
+    "time_left": "Anc {seconds} s",
+    "zoom_outs": "Vista pli gronda: {count}×",
+    "instructions": "Nua è questa fotografia aviatica? Cliccai sin la charta.",
+    "bigger_view": "Vista pli gronda",
+    "new_place": "Auter lieu",
+    "next_round": "Proxima runda",
+    "result": "{name}: {points} puncts. Verd = lieu correct, blau = Voss tip.",
+    "time_up": "Il temp è passà. Quai era {name}.",
+    "your_guess": "Voss tip",
+    "difficulty": "Difficultad",
+    "easy": "Lev (10 km)",
+    "medium": "Mesaun (1 km)",
+    "hard": "Difficil (100 m)"
   }
 }

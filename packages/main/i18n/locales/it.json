@@ -735,5 +735,23 @@
       "termsOfUse": "condizioni-di-utilizzo-e-disposizioni-operative",
       "contact": "impressum-it"
     }
+  },
+  "geogesser": {
+    "title": "Geogesser",
+    "close": "Chiudere il gioco",
+    "total": "Totale: {points}",
+    "time_left": "Ancora {seconds} s",
+    "zoom_outs": "Vista più ampia: {count}×",
+    "instructions": "Dov'è questa immagine aerea? Cliccate sulla carta.",
+    "bigger_view": "Vista più ampia",
+    "new_place": "Altro luogo",
+    "next_round": "Prossimo turno",
+    "result": "{name}: {points} punti. Verde = luogo giusto, blu = la vostra scelta.",
+    "time_up": "Tempo scaduto. Era {name}.",
+    "your_guess": "La vostra scelta",
+    "difficulty": "Difficoltà",
+    "easy": "Facile (10 km)",
+    "medium": "Medio (1 km)",
+    "hard": "Difficile (100 m)"
   }
 }

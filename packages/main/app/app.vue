@@ -40,5 +40,6 @@ if (!isEnabled("enableMobileUi")) {
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <GeogesserTrigger />
   </UApp>
 </template>

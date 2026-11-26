@@ -735,5 +735,23 @@
       "termsOfUse": "conditions-utilisation-et-exploitation",
       "contact": "impressum-fr"
     }
+  },
+  "geogesser": {
+    "title": "Geogesser",
+    "close": "Fermer le jeu",
+    "total": "Total : {points}",
+    "time_left": "Encore {seconds} s",
+    "zoom_outs": "Vue élargie : {count}×",
+    "instructions": "Où se trouve cette image aérienne ? Cliquez sur la carte.",
+    "bigger_view": "Vue élargie",
+    "new_place": "Autre lieu",
+    "next_round": "Manche suivante",
+    "result": "{name} : {points} points. Vert = bon lieu, bleu = votre choix.",
+    "time_up": "Temps écoulé. C'était {name}.",
+    "your_guess": "Votre choix",
+    "difficulty": "Difficulté",
+    "easy": "Facile (10 km)",
+    "medium": "Moyen (1 km)",
+    "hard": "Difficile (100 m)"
   }
 }
