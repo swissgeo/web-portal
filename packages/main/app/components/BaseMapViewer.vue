@@ -28,9 +28,11 @@ import {
   RequestError,
   toRgbaColor,
 } from "@swissgeo/shared";
+import { useSidebarStore } from "@swissgeo/skeleton";
 import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
+import { useRecenterAboveDrawer } from "@/components/featuresinfo/useRecenterAboveDrawer";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 import { readThemeToken } from "@/utils/themeTokens";
 
@@ -66,8 +68,11 @@ const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
 const toolboxStore = useToolboxStore();
 const toaster = useToaster();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const featureStore = useFeaturesStore();
+const sidebarStore = useSidebarStore();
+const isDesktop = useIsDesktop();
+const { recenterAboveDrawer } = useRecenterAboveDrawer();
 
 const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -228,13 +233,65 @@ function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
   };
 }
 
-async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
+// On mobile, feature info shows in a bottom drawer. The embed layout has no
+// place for drawers, so it keeps the popover.
+const isFeatureInfoInDrawer = computed(
+  () => displayMode === "web" && !isDesktop.value,
+);
+const isFeatureInfoDrawerOpen = computed(
+  () =>
+    isFeatureInfoInDrawer.value &&
+    isEnabled("enableFeatureInfo") &&
+    (featureStore.isLoading || featureStore.hasFeatureInfo),
+);
+
+function closeFeatureInfo() {
+  abortController?.abort();
+  featureStore.isLoading = false;
   featureStore.$reset();
+}
+
+// Only one drawer shows at a time: the feature info or a map panel
+watch(isFeatureInfoDrawerOpen, (isOpen) => {
+  if (isOpen) {
+    sidebarStore.closeSidebar();
+  }
+});
+watch(
+  () => sidebarStore.currentSidebar,
+  (sidebar) => {
+    if (sidebar && isFeatureInfoInDrawer.value) {
+      closeFeatureInfo();
+    }
+  },
+);
+
+// On mobile, a toast replaces the drawer when it has nothing to show
+function showDrawerResult(mapClickEvent: MapClickEvent) {
+  if (!isEnabled("enableFeatureInfo")) {
+    if (featureStore.hasSelectedFeatures) {
+      toaster.add({
+        description: t("featureInfo.featureFlag.notAvailable"),
+        color: "info",
+      });
+      featureStore.$reset();
+    }
+    return;
+  }
+  if (!featureStore.hasFeatureInfo) {
+    toaster.add({ description: t("featureInfo.noInformation"), color: "info" });
+    return;
+  }
+  recenterAboveDrawer(mapClickEvent, mapTop.value);
+}
+
+async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
+  // A request of an earlier tap must not open its result over a drawing
+  closeFeatureInfo();
   if (toolboxStore.isDrawingActive()) {
     return;
   }
   updateFeatureInfoDisabledPosition(mapClickEvent.pixel);
-  abortController?.abort();
   abortController = new AbortController();
   const { signal } = abortController;
 
@@ -285,6 +342,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
+  featureStore.isLoading = layersSources.length > 0;
   await selectFeatures(
     mapClickEvent.extent,
     positionStore.projection.epsgNumber,
@@ -293,6 +351,13 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     FEATURE_LIMIT,
     signal,
   );
+  if (signal.aborted) {
+    return;
+  }
+  featureStore.isLoading = false;
+  if (isFeatureInfoInDrawer.value && layersSources.length > 0) {
+    showDrawerResult(mapClickEvent);
+  }
 }
 </script>
 
@@ -326,19 +391,21 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       </template>
       <slot name="map-ui" />
     </MapModule>
-    <FeaturesinfoFeatureInfoPopover
-      v-if="
-        displayMode !== 'print' &&
-        featureStore.hasSelectedFeatures &&
-        isEnabled('enableFeatureInfo')
-      "
-      @close="featureStore.$reset()"
+    <FeaturesinfoFeatureInfoDrawer
+      v-if="isFeatureInfoDrawerOpen"
+      @close="closeFeatureInfo"
     />
-    <FeaturesinfoFeatureInfoDisabled
-      v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
-      :initial-position="featureInfoDisabledPosition"
-      @close="featureStore.$reset()"
-    />
+    <template v-else-if="displayMode !== 'print' && !isFeatureInfoInDrawer">
+      <FeaturesinfoFeatureInfoPopover
+        v-if="featureStore.hasFeatureInfo && isEnabled('enableFeatureInfo')"
+        @close="closeFeatureInfo"
+      />
+      <FeaturesinfoFeatureInfoDisabled
+        v-else-if="featureStore.hasSelectedFeatures"
+        :initial-position="featureInfoDisabledPosition"
+        @close="featureStore.$reset()"
+      />
+    </template>
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />
   </ClientOnly>

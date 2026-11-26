@@ -681,6 +681,12 @@
     "blockedContent": "(Link aus Sicherheitsgründen entfernt)",
     "noInformation": "Keine Informationen verfügbar.",
     "popupTitle": "Objektinformationen",
+    "loading": "Wird geladen…",
+    "close": "Objektinformationen schliessen",
+    "expand": "Objektinformationen vergrössern",
+    "collapse": "Objektinformationen verkleinern",
+    "layerError": "Nicht verfügbar",
+    "layerErrorDetail": "Die Informationen dieser Ebene können noch nicht angezeigt werden.",
     "featureFlag": {
       "notAvailable": "Das Fenster «Objektinformationen» ist noch nicht verfügbar.",
       "workingOnIt": "Es folgt in einer späteren Version."

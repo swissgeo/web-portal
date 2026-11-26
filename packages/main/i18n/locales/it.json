@@ -681,6 +681,12 @@
     "blockedContent": "(Link rimosso per motivi di sicurezza)",
     "noInformation": "Nessuna informazione disponibile.",
     "popupTitle": "Informazioni sull'oggetto",
+    "loading": "TODO translate",
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate",
+    "layerError": "TODO translate",
+    "layerErrorDetail": "TODO translate",
     "featureFlag": {
       "notAvailable": "La finestra «Informazioni sull'oggetto» non è ancora disponibile.",
       "workingOnIt": "Seguirà in una versione successiva."

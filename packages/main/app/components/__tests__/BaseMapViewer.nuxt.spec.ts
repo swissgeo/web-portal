@@ -75,6 +75,11 @@ vi.mock("@swissgeo/feature", async () => {
     get hasSelectedFeatures() {
       return state.hasSelectedFeatures;
     },
+    // no layer fails in these tests
+    get hasFeatureInfo() {
+      return state.hasSelectedFeatures;
+    },
+    isLoading: false,
     get getFeaturesGeoJSON() {
       return state.getFeaturesGeoJSON;
     },
@@ -136,6 +141,8 @@ mockNuxtImport("useMapViewStore", () => {
     clearLayerExpansion,
   });
 });
+// The popover and the disabled notice show on desktop only
+mockNuxtImport("useIsDesktop", () => () => ({ value: true }));
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
   locale: { value: "en" },

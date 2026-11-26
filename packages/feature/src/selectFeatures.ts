@@ -58,7 +58,13 @@ export async function selectFeatures(
     ),
   );
 
+  // A newer click or a close aborted this one, its results are stale
+  if (abortSignal?.aborted) {
+    return;
+  }
+
   const storePayload: Record<string, FeatureData[]> = {};
+  const failedUuids: string[] = [];
 
   for (let i = 0; i < results.length; i++) {
     const result = results[i]!;
@@ -69,10 +75,11 @@ export async function selectFeatures(
     } else if (result.status === "rejected") {
       const err = result.reason;
       log.error(err);
+      failedUuids.push(layer.layerUuid);
     }
   }
 
-  useFeaturesStore().setSelection(storePayload);
+  useFeaturesStore().setSelection(storePayload, failedUuids);
 }
 
 function missingExternalIdsError(layerRequest: LayerRequest): Error {
@@ -314,10 +321,9 @@ async function getFeaturesFromWmsServer(
   }
   const format = pickFormat(wmsRequest.wmsGetFeatureInfo.formats);
   if (!format) {
-    log.debug(
+    throw new Error(
       `[GetFeaturesForOneLayer] Unsupported format. No format in [${wmsRequest.wmsGetFeatureInfo.formats.join(",")}] supported. We are expecting application/json`,
     );
-    return [];
   }
 
   const wmsLayers = wmsRequest.layerName ?? wmsRequest.externalId;
