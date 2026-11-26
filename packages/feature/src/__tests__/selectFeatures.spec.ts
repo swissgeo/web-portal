@@ -387,7 +387,7 @@ describe("Feature Selection from layers and extent", () => {
       }
     });
 
-    it("rejects the identify fetch when the signal is already aborted, logs it and keeps the other layers intact", async () => {
+    it("stores nothing when the signal is already aborted, so stale results never replace a newer click", async () => {
       const controller = new AbortController();
       const abortError = new DOMException(
         "The operation was aborted.",
@@ -423,15 +423,12 @@ describe("Feature Selection from layers and extent", () => {
         controller.signal,
       );
 
-      expect(log.error).toHaveBeenCalledWith(abortError);
       const store = useFeaturesStore();
-      expect(store.selectedFeaturesByUuid["uuid-aborted"]).toBeUndefined();
-      expect(store.selectedFeaturesByUuid["uuid-ok"]).toHaveLength(
-        vectorFeatures.features.length,
-      );
+      expect(store.selectedFeaturesByUuid).toEqual({});
+      expect(store.failedLayerUuids).toEqual([]);
     });
 
-    it("contains a mid-flight abort of the identify request: no unhandled rejection, selection is reset", async () => {
+    it("contains a mid-flight abort of the identify request: no unhandled rejection, selection is untouched", async () => {
       const store = useFeaturesStore();
       store.setSelection({ "uuid-preexisting": [featureData("old")] });
 
@@ -464,9 +461,9 @@ describe("Feature Selection from layers and extent", () => {
 
       controller.abort();
       await expect(selection).resolves.toBeUndefined();
-      expect(log.error).toHaveBeenCalledWith(abortError);
-      expect(store.selectedFeaturesByUuid).toEqual({});
-      expect(store.hasSelectedFeatures).toBe(false);
+      expect(Object.keys(store.selectedFeaturesByUuid)).toEqual([
+        "uuid-preexisting",
+      ]);
     });
 
     it("keeps popup fetches that resolved and drops the ones aborted mid-flight (per-feature resilience)", async () => {
@@ -614,6 +611,7 @@ describe("Feature Selection from layers and extent", () => {
         vectorFeatures.features.length,
       );
       expect(store.selectedFeaturesByUuid["uuid-fail"]).toBeUndefined();
+      expect(store.failedLayerUuids).toEqual(["uuid-fail"]);
     });
 
     it("logs a layer without externalId as an error and keeps the other layers", async () => {
@@ -901,24 +899,23 @@ describe("Feature Selection from layers and extent", () => {
       expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it("skips the layer without any request when no format is negotiable", async () => {
-      const result = await getFeaturesForOneLayer(
-        makeWmsRequest({
-          wmsGetFeatureInfo: {
-            baseUrl: WMS_BASE_URL,
-            method: "GET",
-            formats: ["application/vnd.ogc.gml", "image/png"],
-          },
-        }),
-        EXTENT,
-        EPSG,
-        LANG,
-        10,
-      );
-
-      expect(result).toEqual([]);
+    it("rejects the layer without any request when no format is negotiable", async () => {
+      await expect(
+        getFeaturesForOneLayer(
+          makeWmsRequest({
+            wmsGetFeatureInfo: {
+              baseUrl: WMS_BASE_URL,
+              method: "GET",
+              formats: ["application/vnd.ogc.gml", "image/png"],
+            },
+          }),
+          EXTENT,
+          EPSG,
+          LANG,
+          10,
+        ),
+      ).rejects.toThrow("Unsupported format");
       expect(fetchSpy).not.toHaveBeenCalled();
-      expect(log.debug).toHaveBeenCalled();
     });
 
     it("accepts application/json with a parameter suffix as INFO_FORMAT", async () => {

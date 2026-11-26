@@ -12,6 +12,8 @@ import type {
 export const useFeaturesStore = defineStore("features", () => {
   const selectedFeaturesByUuid = ref<Record<string, FeatureData[]>>({});
   const preSelectedFeaturesByUuid = ref<Record<string, IdentifyFeature[]>>({});
+  // Layers whose request failed or whose answer the viewer cannot read yet
+  const failedLayerUuids = ref<string[]>([]);
   /**
    * For each layer, its feature info capabilities. Only populated by queryable
    * WMS layers.
@@ -62,7 +64,15 @@ export const useFeaturesStore = defineStore("features", () => {
     () => Object.keys(selectedFeaturesByUuid.value).length > 0,
   );
 
-  function setSelection(featuresPerLayer: Record<string, FeatureData[]>): void {
+  const hasFeatureInfo = computed(
+    () => hasSelectedFeatures.value || failedLayerUuids.value.length > 0,
+  );
+
+  function setSelection(
+    featuresPerLayer: Record<string, FeatureData[]>,
+    failedUuids: string[] = [],
+  ): void {
+    failedLayerUuids.value = failedUuids;
     selectedFeaturesByUuid.value = Object.fromEntries(
       Object.entries(featuresPerLayer).filter(
         ([, features]) => features.length > 0,
@@ -114,15 +124,18 @@ export const useFeaturesStore = defineStore("features", () => {
 
   function $reset(): void {
     selectedFeaturesByUuid.value = {};
+    failedLayerUuids.value = [];
   }
 
   return {
     selectedFeaturesByUuid,
+    failedLayerUuids,
     wmsCapabilitiesByUuid,
     // GETTERS
     getFeaturesGeoJSON,
     getShareableFeaturesIdsByUuid,
     hasSelectedFeatures,
+    hasFeatureInfo,
     // ACTIONS
     addSelection,
     addFeaturePreselection,

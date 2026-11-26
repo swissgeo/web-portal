@@ -681,6 +681,12 @@
     "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
     "popupTitle": "Infurmaziuns davart l'object",
+    "loading": "TODO translate",
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate",
+    "layerError": "TODO translate",
+    "layerErrorDetail": "TODO translate",
     "featureFlag": {
       "notAvailable": "La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
       "workingOnIt": "El suonda en ina versiun posteriura."

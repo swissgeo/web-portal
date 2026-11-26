@@ -681,6 +681,12 @@
     "blockedContent": "(Link removed for security reasons)",
     "noInformation": "No information available.",
     "popupTitle": "Feature information",
+    "loading": "Loading…",
+    "close": "Close feature information",
+    "expand": "Enlarge feature information",
+    "collapse": "Shrink feature information",
+    "layerError": "Not available",
+    "layerErrorDetail": "The information of this layer cannot be shown yet.",
     "featureFlag": {
       "notAvailable": "The feature information window is not available yet.",
       "workingOnIt": "It will follow in a later version."

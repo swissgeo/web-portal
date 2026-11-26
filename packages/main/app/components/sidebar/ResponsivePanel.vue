@@ -11,6 +11,7 @@ const {
   isVisible = true,
   isDismissible = true,
   hasOwnScroller = false,
+  hasCloseButton = false,
   itemCount,
   collapseLabel,
   expandLabel,
@@ -24,6 +25,8 @@ const {
   isDismissible?: boolean;
   // The content scrolls in an element of its own, e.g. below a fixed header
   hasOwnScroller?: boolean;
+  // Shows a close button in the mobile drawer header
+  hasCloseButton?: boolean;
   // A change measures the content height again, opening an item does not
   itemCount?: number;
 }>();
@@ -172,6 +175,7 @@ useDrawerTouchGuard(scroller, {
     v-model:activeSnapPoint="activeSnapPoint"
     :snapPoints="snapPoints"
     :dismissible="isCurrentlyDismissible"
+    :close="hasCloseButton"
     :modal="false"
     :overlay="false"
     portal="#main"
