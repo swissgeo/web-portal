@@ -88,7 +88,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
             color="neutral"
             variant="outline"
             :label="t('dataset.aggregated')"
-            class="shrink-0 rounded-md px-space-2xs py-space-3xs text-tiny"
+            class="shrink-0 rounded-md px-space-2xs py-space-3xs text-tiny text-default ring-(--ui-bg-accented)"
             data-testid="catalog-layer-aggregated"
           />
         </div>
