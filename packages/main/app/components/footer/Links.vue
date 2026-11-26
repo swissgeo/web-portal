@@ -22,19 +22,25 @@ const versionUrl = computed(() => {
     :class="
       mobile
         ? 'flex flex-col gap-4 pb-20 text-tiny'
-        : 'flex w-fit flex-row flex-wrap items-center justify-end gap-x-4 gap-y-2 pr-3'
+        : 'flex w-fit flex-row flex-wrap items-center justify-end gap-x-8 gap-y-2 pr-3'
     "
   >
     <ReportIssueLink />
-    <div :class="mobile ? 'text-accent grid grid-cols-2 gap-2' : 'contents'">
+    <div
+      :class="
+        mobile
+          ? 'text-accent grid grid-cols-2 gap-2'
+          : 'flex flex-wrap items-center justify-end gap-x-4 gap-y-2'
+      "
+    >
       <ULink
         :to="versionUrl"
         data-testid="footer-version-link"
         target="_blank"
         raw
-        class="flex items-center gap-1"
+        class="flex items-center gap-1.5"
       >
-        <UIcon name="i-lucide-github" class="size-3 shrink-0" />
+        <UIcon name="i-lucide-github" class="size-[13px] shrink-0" />
         {{ runtimeConfig.public.version }}
       </ULink>
       <ULink

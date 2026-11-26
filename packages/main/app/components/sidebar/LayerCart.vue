@@ -74,11 +74,11 @@ function openLayerCatalog() {
   <!-- In the mobile drawer the whole cart scrolls, so the header sticks like
        the other panel headers -->
   <div
-    class="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-default bg-default px-4 py-3"
+    class="sticky top-0 z-10 flex items-center justify-between gap-2 bg-default p-4 after:absolute after:start-4 after:end-0 after:bottom-0 after:border-b after:border-default"
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
          panel header, hence the h3 -->
-    <h3 class="text-sm font-semibold text-highlighted">
+    <h3 class="text-lg leading-normal font-semibold text-highlighted">
       {{ t("menu.map") }}
     </h3>
     <!-- On mobile the footer opens the catalog -->
@@ -87,7 +87,7 @@ function openLayerCatalog() {
       color="primary"
       variant="outline"
       size="xs"
-      class="cursor-pointer max-md:hidden"
+      class="cursor-pointer text-tiny max-md:hidden"
       @click="openLayerCatalog"
     >
       {{ t("menu.openLayerCatalog") }}
@@ -98,7 +98,7 @@ function openLayerCatalog() {
     ref="layerCartRef"
     @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
-    class="mt-2.5 flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 overflow-y-auto px-2 py-1.5"
+    class="mt-2.5 flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-2 overflow-y-auto px-2 py-1.5"
   >
     <LayerCartEntry
       v-for="{ layer, layerIndex } in sortedLayers"

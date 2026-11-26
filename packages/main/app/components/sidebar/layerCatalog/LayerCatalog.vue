@@ -45,7 +45,7 @@ provide(
   <div class="flex min-h-full flex-col md:h-full md:flex-row">
     <div
       v-if="isDesktop"
-      class="relative w-75 shrink-0 [scrollbar-gutter:stable] overflow-y-auto border-r border-default px-4 py-3"
+      class="relative w-75 shrink-0 [scrollbar-gutter:stable] overflow-y-auto border-r border-default p-4"
     >
       <LayerCatalogTree v-model:concept-id="conceptId" :concepts :status />
     </div>

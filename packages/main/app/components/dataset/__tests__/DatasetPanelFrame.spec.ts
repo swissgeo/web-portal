@@ -95,15 +95,11 @@ describe("DatasetPanelFrame", () => {
     wrapper.unmount();
   });
 
-  it("draws the panel border outside the scroll area on desktop", () => {
+  it("draws the panel shadow outside the scroll area on desktop", () => {
     const wrapper = render(clientRender);
 
     expect(wrapper.get("div").classes()).toEqual(
-      expect.arrayContaining([
-        "md:border-r",
-        "md:border-default",
-        "md:bg-default",
-      ]),
+      expect.arrayContaining(["md:shadow-drop-right-lg", "md:bg-default"]),
     );
     wrapper.unmount();
   });

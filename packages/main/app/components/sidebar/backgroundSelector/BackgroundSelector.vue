@@ -14,8 +14,9 @@ import {
 const { locale, t } = useI18n();
 const layerStore = useLayerStore();
 const currentBackground = computed(() => layerStore.backgroundLayer);
-// The tile list is as wide as the whole gray box, not only the button
+// Open, the tiles, the label and the field form one surface
 const selectorBox = useTemplateRef<HTMLElement>("selectorBox");
+const isOpen = ref(false);
 
 const currentBackgroundLabel = computed(() =>
   t(getBackgroundTranslationKey(currentBackground.value)),
@@ -81,7 +82,11 @@ function selectBackground(backgroundLayer: Layer | null) {
 </script>
 
 <template>
-  <div ref="selectorBox" class="w-full rounded-lg bg-elevated p-2">
+  <div
+    ref="selectorBox"
+    class="-m-2 rounded-b-lg p-2"
+    :class="{ 'bg-elevated': isOpen }"
+  >
     <UFormField
       :label="t('backgroundLayers.label')"
       :ui="{
@@ -90,11 +95,12 @@ function selectBackground(backgroundLayer: Layer | null) {
     >
       <!-- The tile list opens over the drawer content, so every background stays reachable -->
       <UPopover
+        v-model:open="isOpen"
         :reference="selectorBox ?? undefined"
-        :content="{ side: 'top' }"
+        :content="{ side: 'top', sideOffset: 0 }"
         :ui="{
           content:
-            'max-h-(--reka-popover-content-available-height) w-(--reka-popper-anchor-width) overflow-y-auto bg-elevated p-2',
+            'max-h-(--reka-popover-content-available-height) w-(--reka-popper-anchor-width) overflow-y-auto rounded-t-lg rounded-b-none bg-elevated p-2 shadow-none ring-0',
         }"
       >
         <template #default="{ open }">
@@ -102,12 +108,13 @@ function selectBackground(backgroundLayer: Layer | null) {
             data-testid="background-selector-toggle"
             :label="currentBackgroundLabel"
             color="neutral"
-            variant="subtle"
+            variant="soft"
             :trailing-icon="
               open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
             "
             :ui="{
-              base: 'bg-accented',
+              base: 'rounded-lg bg-elevated px-2.5 py-1.5 text-highlighted hover:bg-elevated',
+              trailingIcon: 'text-accent',
             }"
             block
           />

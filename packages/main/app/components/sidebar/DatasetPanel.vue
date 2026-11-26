@@ -56,10 +56,10 @@ const backLabel = computed(() => {
         <div class="flex items-center gap-space-xs self-end md:self-auto">
           <UButton
             icon="i-lucide-x"
-            color="neutral"
+            color="accent"
             variant="ghost"
             :aria-label="t('dataset.close')"
-            :ui="{ leadingIcon: 'max-md:size-6' }"
+            :ui="{ leadingIcon: 'size-6' }"
             data-testid="dataset-close"
             @click="emit('close')"
           />
@@ -75,16 +75,18 @@ const backLabel = computed(() => {
             id="dataset-panel-title"
             data-testid="dataset-title"
             class="inline text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
-            :class="dataset?.properties.aggregated ? 'pr-4' : 'pr-10'"
+            :class="
+              dataset?.properties.aggregated ? 'pr-4 md:pr-8' : 'pr-10 md:pr-14'
+            "
           >
             {{ dataset?.properties.title }}
           </h1>
           <UBadge
             v-if="dataset?.properties.aggregated"
             color="neutral"
-            variant="subtle"
+            variant="outline"
             :label="t('dataset.aggregated')"
-            class="mr-10 align-middle"
+            class="mr-14 rounded-md px-space-xs py-space-2xs align-middle text-tiny leading-[1.3] font-medium text-default ring-(--ui-bg-accented)"
             data-testid="dataset-aggregated"
           />
           <DatasetCopyLink

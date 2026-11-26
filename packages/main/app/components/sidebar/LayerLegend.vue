@@ -98,7 +98,7 @@ const documentLinks = computed(() =>
   <div data-testid="layer-legend" class="flex flex-col gap-2">
     <span
       v-if="presentation === 'sidebar'"
-      class="text-xs font-medium text-toned"
+      class="text-tiny font-medium text-default"
     >
       {{ t("layers.legend.title") }}
     </span>
@@ -110,10 +110,11 @@ const documentLinks = computed(() =>
       as="div"
       raw
       data-testid="layer-legend-images"
-      class="block rounded border border-default bg-white p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      class="block bg-white p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       :class="{
-        'max-h-64 overflow-auto': presentation === 'sidebar',
-        'w-fit max-w-full': presentation === 'detail',
+        'max-h-64 overflow-auto rounded border border-default':
+          presentation === 'sidebar',
+        'w-fit max-w-full rounded-lg': presentation === 'detail',
       }"
     >
       <img

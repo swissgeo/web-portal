@@ -217,7 +217,7 @@ useDrawerTouchGuard(scroller, {
   <div v-else v-show="isVisible" class="flex min-h-0 flex-1 flex-col">
     <div
       v-if="hasHeader"
-      class="flex items-center justify-between border-b border-default px-4 py-3"
+      class="flex items-center justify-between border-b border-default p-4"
     >
       <h3 class="text-sm font-semibold text-highlighted">
         {{ title }}
@@ -227,7 +227,7 @@ useDrawerTouchGuard(scroller, {
         variant="outline"
         size="xs"
         trailing-icon="i-lucide-x"
-        class="cursor-pointer"
+        class="cursor-pointer text-tiny"
         data-testid="panel-close"
         @click="emit('close')"
       >

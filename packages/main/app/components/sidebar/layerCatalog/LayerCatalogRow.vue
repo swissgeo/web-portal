@@ -44,7 +44,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
     role="row"
     data-testid="catalog-layer-row"
     :data-available="canToggle"
-    class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
+    class="group/row hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
     <div role="cell" class="flex min-w-0 items-start px-2 py-4">
@@ -62,7 +62,8 @@ async function setOnMap(onMap: boolean): Promise<void> {
           :aria-describedby="canToggle ? undefined : hintId"
           :model-value="isOnMap"
           :ui="{
-            base: 'aria-disabled:cursor-not-allowed aria-disabled:opacity-75',
+            base: 'aria-disabled:cursor-not-allowed aria-disabled:opacity-75 data-[state=unchecked]:bg-accent group-hover/row:data-[state=unchecked]:bg-accent-hover data-[state=checked]:bg-accent-active',
+            icon: 'size-3 group-data-[state=checked]:text-accent-active',
           }"
           @update:model-value="setOnMap"
         />
@@ -76,19 +77,18 @@ async function setOnMap(onMap: boolean): Promise<void> {
         raw
         as="div"
         :to="titlePath"
-        class="ms-4 min-w-0 text-sm"
+        class="ms-4 min-w-0 text-sm leading-small-text"
       >
         <div class="flex min-w-0 items-center gap-space-xs">
-          <p class="font-bold max-md:line-clamp-2 md:truncate">
+          <p class="font-bold text-pretty max-md:line-clamp-2">
             {{ dataset.properties.shortTitle }}
           </p>
           <UBadge
             v-if="dataset.properties.aggregated"
             color="neutral"
-            variant="subtle"
-            size="sm"
+            variant="outline"
             :label="t('dataset.aggregated')"
-            class="shrink-0"
+            class="shrink-0 rounded-md px-space-2xs py-space-3xs text-tiny text-default ring-(--ui-bg-accented)"
             data-testid="catalog-layer-aggregated"
           />
         </div>
@@ -109,7 +109,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
     >
       {{ ownerName }}
     </div>
-    <div role="cell" class="py-4 pr-2">
+    <div role="cell" class="px-space-xs py-4">
       <UButton
         data-testid="catalog-layer-info"
         icon="i-lucide-info"

@@ -18,8 +18,10 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 import SearchCategory from "./SearchCategory.vue";
 
 const emit = defineEmits(["selected", "coordinates-detected"]);
-const { skipMobile = false } = defineProps<{
+const { skipMobile = false, large = false } = defineProps<{
   skipMobile?: boolean;
+  // the bigger field of the home page
+  large?: boolean;
 }>();
 
 const { t, locale } = useI18n();
@@ -400,7 +402,10 @@ function clearSearch() {
       onOpenAutoFocus: (event: Event) => event.preventDefault(),
     }"
     :dismissible="true"
-    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96 max-sm:min-w-0' }"
+    :ui="{
+      content:
+        'w-(--reka-popper-anchor-width) min-w-96 max-sm:min-w-0 shadow-drop-lg',
+    }"
   >
     <template #anchor>
       <UInput
@@ -419,7 +424,12 @@ function clearSearch() {
         @keydown.enter.prevent="submitCoordinate"
         :ui="{
           // the placeholder disappears as soon as the field is clicked into
-          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! text-ellipsis dark:bg-primary-950',
+          base: [
+            'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! text-ellipsis dark:bg-primary-950',
+            large && 'py-3 ps-11 pe-4',
+          ],
+          leading: large ? 'ps-4' : undefined,
+          trailing: large ? 'pe-4' : undefined,
           leadingIcon: 'text-nav-brand-muted',
         }"
         v-bind="$attrs"
@@ -427,10 +437,12 @@ function clearSearch() {
         <template v-if="query" #trailing>
           <UButton
             icon="i-lucide-circle-x"
-            color="primary"
-            variant="ghost"
+            color="neutral"
+            variant="link"
             size="xs"
+            class="p-0"
             aria-label="Clear search"
+            :ui="{ leadingIcon: 'size-6 text-accent' }"
             @click="clearSearch"
           />
         </template>

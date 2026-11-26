@@ -25,7 +25,7 @@ const icon = computed(() => {
     <UButton
       :icon="icon"
       :class="{ 'text-success': copied }"
-      color="primary"
+      color="accent"
       variant="ghost"
       :aria-label="label"
       data-testid="dataset-copy-link"
