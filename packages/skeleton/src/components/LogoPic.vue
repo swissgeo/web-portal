@@ -39,13 +39,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
       <img
         v-if="!darkMode"
         src="@/assets/images/swissgeo_rgb_sek.svg"
-        class="h-8"
+        class="h-4.5 lg:h-8"
         data-testid="sidebar-logo-pic-image-extended"
       />
       <img
         v-else
         src="@/assets/images/swissgeo_neg_sek.svg"
-        class="h-8"
+        class="h-4.5 lg:h-8"
         data-testid="sidebar-logo-pic-image-extended"
       />
     </div>

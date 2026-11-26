@@ -54,8 +54,6 @@ const items = computed<NavigationMenuItem[]>(() => [
       container:
         'max-w-full gap-1.5 lg:gap-10 bg-primary-50 dark:bg-primary-800',
       left: 'justify-between gap-10 grow lg:flex-initial lg:min-w-0',
-      header: 'gap-1.5',
-      body: 'px-8 py-4',
     }"
     :toggle="{
       class: 'text-nav-brand',
@@ -103,21 +101,40 @@ const items = computed<NavigationMenuItem[]>(() => [
       </div>
     </template>
 
-    <template #body>
-      <UNavigationMenu
-        :items="items"
-        orientation="vertical"
-        :ui="{
-          item: 'mb-4',
-          link: 'text-lg text-accent data-active:before:bg-elevated data-active:text-accent-active',
-        }"
-      />
-      <div class="flex items-center border-y border-default py-4">
-        <div class="w-full">
-          <TopbarLanguageSwitcherButton size="xl" />
-        </div>
-        <div class="w-full">
-          <TopbarColorModeButton size="xl" class="w-fit" />
+    <!-- the open menu shows a title row instead of the logo and the search -->
+    <template #content="{ close }">
+      <div
+        class="flex h-(--ui-header-height) shrink-0 items-center justify-between border-b border-default px-4"
+      >
+        <p class="text-lg font-semibold text-highlighted">
+          {{ t("topbar.menu") }}
+        </p>
+        <UButton
+          icon="i-lucide-x"
+          color="neutral"
+          variant="ghost"
+          :aria-label="t('topbar.closeMenu')"
+          data-testid="topbar-menu-close"
+          @click="close"
+        />
+      </div>
+      <div class="overflow-y-auto py-6">
+        <UNavigationMenu
+          :items="items"
+          orientation="vertical"
+          class="px-4"
+          :ui="{
+            item: 'mb-4',
+            link: 'text-lg text-accent data-active:before:bg-elevated data-active:text-accent-active',
+          }"
+        />
+        <div class="flex items-center border-y border-default p-4">
+          <div class="w-full">
+            <TopbarLanguageSwitcherButton size="xl" />
+          </div>
+          <div class="w-full">
+            <TopbarColorModeButton size="xl" class="w-fit" />
+          </div>
         </div>
       </div>
     </template>

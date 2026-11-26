@@ -93,18 +93,13 @@ test.describe("topbar search", () => {
     await page.getByRole("option", { name: "Français", exact: true }).click();
 
     await expect(page).toHaveURL(/\/fr\/map$/);
+    const menu = page.getByRole("dialog");
     await expect(
-      page.getByRole("button", { name: "Fermer le menu" }),
-    ).toBeVisible();
-    const menu = page.getByRole("dialog").filter({
-      has: page.getByRole("button", { name: "Fermer le menu" }),
-    });
-    await expect(
-      menu.getByRole("button", { name: "Rechercher" }),
+      menu.getByRole("link", { name: "Page d'accueil" }),
     ).toBeVisible();
     expect(await map?.evaluate((element) => element.isConnected)).toBe(true);
 
-    await page.getByRole("button", { name: "Fermer le menu" }).click();
+    await menu.getByRole("button", { name: "Fermer le menu" }).click();
     await expect(
       page.getByRole("button", { name: "Ouvrir le menu" }),
     ).toBeVisible();

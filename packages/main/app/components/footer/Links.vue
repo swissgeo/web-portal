@@ -21,7 +21,7 @@ const versionUrl = computed(() => {
   <div
     :class="
       mobile
-        ? 'flex flex-col gap-4 pb-20 text-tiny'
+        ? 'flex flex-col gap-4 pb-4 text-tiny'
         : 'flex w-fit flex-row flex-wrap items-center justify-end gap-x-4 gap-y-2 pr-3'
     "
   >

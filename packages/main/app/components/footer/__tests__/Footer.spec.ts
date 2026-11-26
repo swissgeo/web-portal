@@ -92,6 +92,15 @@ describe("Footer.vue", () => {
       );
     });
 
+    it("highlights the map while no sidebar is shown", () => {
+      const wrapper = mountFooter();
+
+      expect(navButton(wrapper, "map").props("variant")).toBe("solid-inverted");
+      expect(navButton(wrapper, "catalog").props("variant")).toBe(
+        "ghost-inverted",
+      );
+    });
+
     it("highlights the map while the layer cart is shown", () => {
       useSidebarStore().setSidebar(SidebarType.LAYER_CART);
 
