@@ -735,5 +735,19 @@
       "termsOfUse": "nutzungs-und-betriebsbestimmungen",
       "contact": "impressum-de"
     }
+  },
+  "geogesser": {
+    "title": "Geogesser",
+    "close": "Spiel schliessen",
+    "total": "Total: {points}",
+    "time_left": "Noch {seconds} s",
+    "zoom_outs": "Grössere Ansicht: {count}×",
+    "instructions": "Wo ist dieses Luftbild? Klicken Sie auf die Karte.",
+    "bigger_view": "Grössere Ansicht",
+    "new_place": "Anderer Ort",
+    "next_round": "Nächste Runde",
+    "result": "{name}: {points} Punkte. Grün = richtiger Ort, blau = Ihr Tipp.",
+    "time_up": "Zeit abgelaufen. Das war {name}.",
+    "your_guess": "Ihr Tipp"
   }
 }

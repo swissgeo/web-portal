@@ -62,6 +62,7 @@ const HIGHLIGHT_LAYER_CIRCLE_RADIUS = 7;
 
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
+const geogesserStore = useGeogesserStore();
 const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
 const toolboxStore = useToolboxStore();
@@ -230,7 +231,8 @@ function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
 
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   featureStore.$reset();
-  if (toolboxStore.isDrawingActive()) {
+  // a click in the Geogesser game is a guess, not a feature query
+  if (toolboxStore.isDrawingActive() || geogesserStore.isOpen) {
     return;
   }
   updateFeatureInfoDisabledPosition(mapClickEvent.pixel);

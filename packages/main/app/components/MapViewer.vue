@@ -64,6 +64,7 @@ const displayMode = inject(displayModeKey, "web");
         v-if="searchStore.pinnedCoordinate && displayMode === 'web'"
       />
       <LazyMapEasterEggs v-if="displayMode === 'web'" />
+      <LazyGeogesser v-if="displayMode === 'web'" />
       <MapAttributionList
         v-if="displayMode === 'web'"
         :sources="attributionSources"

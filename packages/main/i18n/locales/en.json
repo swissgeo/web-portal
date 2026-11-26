@@ -735,5 +735,19 @@
       "termsOfUse": "terms-of-use-and-operating-conditions",
       "contact": "impressum-en"
     }
+  },
+  "geogesser": {
+    "title": "Geogesser",
+    "close": "Close the game",
+    "total": "Total: {points}",
+    "time_left": "{seconds} s left",
+    "zoom_outs": "Bigger view: {count}×",
+    "instructions": "Where is this aerial image? Click on the map.",
+    "bigger_view": "Bigger view",
+    "new_place": "Other place",
+    "next_round": "Next round",
+    "result": "{name}: {points} points. Green = right place, blue = your guess.",
+    "time_up": "Time is up. It was {name}.",
+    "your_guess": "Your guess"
   }
 }
