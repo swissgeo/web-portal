@@ -54,12 +54,6 @@ const protocol = computed(() => {
         v-if="address && !isLoading && !error"
         class="col-start-2 row-span-2 row-start-1 flex self-start @2xl:col-start-auto @2xl:row-span-1 @2xl:row-start-auto"
       >
-        <DatasetCopyLink
-          :url="address"
-          :label="t('dataset.copy')"
-          default-icon="i-lucide-copy"
-          data-testid="dataset-service-copy"
-        />
         <UTooltip :text="t('dataset.openService')">
           <UButton
             :to="address"
@@ -71,6 +65,12 @@ const protocol = computed(() => {
             data-testid="dataset-service-open"
           />
         </UTooltip>
+        <DatasetCopyLink
+          :url="address"
+          :label="t('dataset.copy')"
+          default-icon="i-lucide-copy"
+          data-testid="dataset-service-copy"
+        />
       </div>
     </ClientOnly>
   </div>

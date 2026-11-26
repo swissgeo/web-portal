@@ -86,7 +86,7 @@ const backLabel = computed(() => {
             color="neutral"
             variant="outline"
             :label="t('dataset.aggregated')"
-            class="mr-10 rounded-md px-space-2xs py-space-3xs align-middle text-tiny"
+            class="mr-14 rounded-md px-space-xs py-space-2xs align-middle text-tiny leading-[1.3] font-medium text-default ring-(--ui-bg-accented)"
             data-testid="dataset-aggregated"
           />
           <DatasetCopyLink

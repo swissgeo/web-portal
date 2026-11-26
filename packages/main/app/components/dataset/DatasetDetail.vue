@@ -127,7 +127,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
         <section
           v-if="contacts.length"
-          class="border-y border-default py-space-s"
+          class="border-y border-default py-2 pl-2"
           data-testid="dataset-contacts"
         >
           <h3
