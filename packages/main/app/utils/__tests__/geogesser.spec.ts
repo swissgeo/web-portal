@@ -57,6 +57,10 @@ describe("geogesser", () => {
     expect(geogesserScore(0, 2)).toBe(3_500);
   });
 
+  it("gives fewer points on an easier level", () => {
+    expect(geogesserScore(0, 0, 0.3)).toBe(1_500);
+  });
+
   it("never gives negative points", () => {
     expect(geogesserScore(0, 20)).toBe(0);
   });

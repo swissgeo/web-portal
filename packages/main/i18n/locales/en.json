@@ -748,6 +748,10 @@
     "next_round": "Next round",
     "result": "{name}: {points} points. Green = right place, blue = your guess.",
     "time_up": "Time is up. It was {name}.",
-    "your_guess": "Your guess"
+    "your_guess": "Your guess",
+    "difficulty": "Difficulty",
+    "easy": "Easy (10 km)",
+    "medium": "Medium (1 km)",
+    "hard": "Hard (100 m)"
   }
 }

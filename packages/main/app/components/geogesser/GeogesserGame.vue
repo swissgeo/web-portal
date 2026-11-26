@@ -22,7 +22,10 @@ import { Vector as VectorSource, XYZ } from "ol/source";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import { useI18n } from "vue-i18n";
 
+import type { GeogesserDifficulty } from "@/utils/geogesser";
+
 import {
+  GEOGESSER_DIFFICULTIES,
   GEOGESSER_MAX_ZOOM_OUTS,
   GEOGESSER_ROUND_SECONDS,
   formatGeogesserDistance,
@@ -43,14 +46,21 @@ type Round = {
 
 const SWISSIMAGE_URL =
   "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/2056/{z}/{x}/{y}.jpeg";
-// 0.5 m/px: houses and roads show, but the area is small
-const START_RESOLUTION = 0.5;
+// the photo is 264 px wide: the w-72 (288 px) panel minus the p-3 padding
+const PHOTO_WIDTH_PX = 264;
 
 const { t } = useI18n();
 const geogesserStore = useGeogesserStore();
 const olMap = inject<Ref<OlMap | undefined>>("olMap");
 const photoElement = useTemplateRef<HTMLElement>("photo");
 
+const difficulty = ref<GeogesserDifficulty>("medium");
+const difficultyItems = computed(() =>
+  Object.keys(GEOGESSER_DIFFICULTIES).map((value) => ({
+    value,
+    label: t(`geogesser.${value}`),
+  })),
+);
 const round = ref<Round>(newRound());
 const totalScore = ref(0);
 const isFinished = computed(() => round.value.score !== undefined);
@@ -68,11 +78,19 @@ function newRound(): Round {
   };
 }
 
+/** Each "bigger view" step doubles the width of the area in the photo */
+function photoResolution(): number {
+  return (
+    (GEOGESSER_DIFFICULTIES[difficulty.value].width / PHOTO_WIDTH_PX) *
+    2 ** round.value.zoomOuts
+  );
+}
+
 // The photo map has no interactions: the user must not pan or zoom it for free
 const photoView = new View({
   ...getLV95ViewConfig(),
   center: round.value.target,
-  resolution: START_RESOLUTION,
+  resolution: photoResolution(),
 });
 let photoMap: OlMap | undefined;
 
@@ -163,7 +181,7 @@ function zoomOut() {
     return;
   }
   round.value.zoomOuts += 1;
-  photoView.setResolution(START_RESOLUTION * 2 ** round.value.zoomOuts);
+  photoView.setResolution(photoResolution());
 }
 
 function finish(guess: number[] | undefined) {
@@ -175,7 +193,11 @@ function finish(guess: number[] | undefined) {
     const distance = geogesserDistance(guess, target);
     round.value.guess = guess;
     round.value.distance = distance;
-    round.value.score = geogesserScore(distance, zoomOuts);
+    round.value.score = geogesserScore(
+      distance,
+      zoomOuts,
+      GEOGESSER_DIFFICULTIES[difficulty.value].factor,
+    );
   } else {
     round.value.score = 0;
   }
@@ -187,8 +209,11 @@ function restart() {
   resultSource.clear();
   round.value = newRound();
   photoView.setCenter(round.value.target);
-  photoView.setResolution(START_RESOLUTION);
+  photoView.setResolution(photoResolution());
 }
+
+// a new level starts a new round, so that nobody changes the level mid-round
+watch(difficulty, restart);
 
 const timer = setInterval(() => {
   if (isFinished.value) {
@@ -251,6 +276,15 @@ onBeforeUnmount(() => {
         />
       </div>
     </template>
+
+    <USelect
+      v-model="difficulty"
+      :items="difficultyItems"
+      :aria-label="t('geogesser.difficulty')"
+      size="sm"
+      class="mb-2 w-full"
+      data-testid="geogesser-difficulty"
+    />
 
     <div
       ref="photo"

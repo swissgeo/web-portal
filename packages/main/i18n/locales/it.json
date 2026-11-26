@@ -748,6 +748,10 @@
     "next_round": "Prossimo turno",
     "result": "{name}: {points} punti. Verde = luogo giusto, blu = la vostra scelta.",
     "time_up": "Tempo scaduto. Era {name}.",
-    "your_guess": "La vostra scelta"
+    "your_guess": "La vostra scelta",
+    "difficulty": "Difficoltà",
+    "easy": "Facile (10 km)",
+    "medium": "Medio (1 km)",
+    "hard": "Difficile (100 m)"
   }
 }

@@ -71,6 +71,17 @@ export const GEOGESSER_ZOOM_OUT_PENALTY = 0.15;
 export const GEOGESSER_MAX_ZOOM_OUTS = 5;
 export const GEOGESSER_ROUND_SECONDS = 90;
 
+/**
+ * Width in meters of the area that the aerial image shows at the start. An
+ * easier level shows more and gives fewer points.
+ */
+export const GEOGESSER_DIFFICULTIES = {
+  easy: { width: 10_000, factor: 0.3 },
+  medium: { width: 1_000, factor: 0.6 },
+  hard: { width: 100, factor: 1 },
+} as const;
+export type GeogesserDifficulty = keyof typeof GEOGESSER_DIFFICULTIES;
+
 export function isGeogesserTrigger(query: string): boolean {
   return query.trim().toLowerCase() === GEOGESSER_TRIGGER;
 }
@@ -104,11 +115,15 @@ export function geogesserDistance(
   return Math.hypot(to[0]! - from[0]!, to[1]! - from[1]!);
 }
 
-export function geogesserScore(distance: number, zoomOuts: number): number {
+export function geogesserScore(
+  distance: number,
+  zoomOuts: number,
+  factor = 1,
+): number {
   const distancePoints =
     GEOGESSER_MAX_POINTS * Math.exp(-distance / GEOGESSER_DISTANCE_SCALE);
   const penalty = Math.max(0, 1 - zoomOuts * GEOGESSER_ZOOM_OUT_PENALTY);
-  return Math.round(distancePoints * penalty);
+  return Math.round(distancePoints * penalty * factor);
 }
 
 export function formatGeogesserDistance(distance: number): string {

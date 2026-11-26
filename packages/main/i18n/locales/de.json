@@ -748,6 +748,10 @@
     "next_round": "Nächste Runde",
     "result": "{name}: {points} Punkte. Grün = richtiger Ort, blau = Ihr Tipp.",
     "time_up": "Zeit abgelaufen. Das war {name}.",
-    "your_guess": "Ihr Tipp"
+    "your_guess": "Ihr Tipp",
+    "difficulty": "Schwierigkeit",
+    "easy": "Leicht (10 km)",
+    "medium": "Mittel (1 km)",
+    "hard": "Schwierig (100 m)"
   }
 }
