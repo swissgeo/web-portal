@@ -14,7 +14,6 @@ export const useFeaturesStore = defineStore("features", () => {
   const preSelectedFeaturesByUuid = ref<Record<string, IdentifyFeature[]>>({});
   // Layers whose request failed or whose answer the viewer cannot read yet
   const failedLayerUuids = ref<string[]>([]);
-  const isLoading = ref(false);
   /**
    * For each layer, its feature info capabilities. Only populated by queryable
    * WMS layers.
@@ -131,7 +130,6 @@ export const useFeaturesStore = defineStore("features", () => {
   return {
     selectedFeaturesByUuid,
     failedLayerUuids,
-    isLoading,
     wmsCapabilitiesByUuid,
     // GETTERS
     getFeaturesGeoJSON,

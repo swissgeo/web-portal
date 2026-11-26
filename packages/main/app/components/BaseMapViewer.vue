@@ -28,7 +28,6 @@ import {
   RequestError,
   toRgbaColor,
 } from "@swissgeo/shared";
-import { useSidebarStore } from "@swissgeo/skeleton";
 import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
@@ -70,7 +69,6 @@ const toolboxStore = useToolboxStore();
 const toaster = useToaster();
 const { locale, t } = useI18n();
 const featureStore = useFeaturesStore();
-const sidebarStore = useSidebarStore();
 const isDesktop = useIsDesktop();
 const { recenterAboveDrawer } = useRecenterAboveDrawer();
 
@@ -238,33 +236,19 @@ function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
 const isFeatureInfoInDrawer = computed(
   () => displayMode === "web" && !isDesktop.value,
 );
+const isFeatureInfoLoading = ref(false);
 const isFeatureInfoDrawerOpen = computed(
   () =>
     isFeatureInfoInDrawer.value &&
     isEnabled("enableFeatureInfo") &&
-    (featureStore.isLoading || featureStore.hasFeatureInfo),
+    (isFeatureInfoLoading.value || featureStore.hasFeatureInfo),
 );
 
 function closeFeatureInfo() {
   abortController?.abort();
-  featureStore.isLoading = false;
+  isFeatureInfoLoading.value = false;
   featureStore.$reset();
 }
-
-// Only one drawer shows at a time: the feature info or a map panel
-watch(isFeatureInfoDrawerOpen, (isOpen) => {
-  if (isOpen) {
-    sidebarStore.closeSidebar();
-  }
-});
-watch(
-  () => sidebarStore.currentSidebar,
-  (sidebar) => {
-    if (sidebar && isFeatureInfoInDrawer.value) {
-      closeFeatureInfo();
-    }
-  },
-);
 
 // On mobile, a toast replaces the drawer when it has nothing to show
 function showDrawerResult(mapClickEvent: MapClickEvent) {
@@ -342,7 +326,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  featureStore.isLoading = layersSources.length > 0;
+  isFeatureInfoLoading.value = layersSources.length > 0;
   await selectFeatures(
     mapClickEvent.extent,
     positionStore.projection.epsgNumber,
@@ -354,7 +338,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  featureStore.isLoading = false;
+  isFeatureInfoLoading.value = false;
   if (isFeatureInfoInDrawer.value && layersSources.length > 0) {
     showDrawerResult(mapClickEvent);
   }
@@ -393,6 +377,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     </MapModule>
     <FeaturesinfoFeatureInfoDrawer
       v-if="isFeatureInfoDrawerOpen"
+      :isLoading="isFeatureInfoLoading"
       @close="closeFeatureInfo"
     />
     <template v-else-if="displayMode !== 'print' && !isFeatureInfoInDrawer">

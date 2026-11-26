@@ -79,7 +79,6 @@ vi.mock("@swissgeo/feature", async () => {
     get hasFeatureInfo() {
       return state.hasSelectedFeatures;
     },
-    isLoading: false,
     get getFeaturesGeoJSON() {
       return state.getFeaturesGeoJSON;
     },

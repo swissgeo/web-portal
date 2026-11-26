@@ -166,6 +166,57 @@ export async function mockMapBackground(page: Page) {
   );
 }
 
+const IDENTIFY_BASE_URL = "http://identify.test/rest";
+
+/**
+ * Give the pixelkarte layer an identify service that finds one feature
+ * anywhere on the map.
+ */
+export async function mockFeatureInfo(page: Page) {
+  const distributions = structuredClone(ChSwisstopoPixelkarteFarbeDistribution);
+  distributions.features[0]!.links.push({
+    href: "http://oar.test/featureinfo",
+    rel: "featureinfo",
+  } as (typeof distributions.features)[0]["links"][0]);
+  await page.route(
+    "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
+    (route) => route.fulfill({ status: 200, json: distributions }),
+  );
+  await page.route("http://oar.test/featureinfo", (route) =>
+    route.fulfill({
+      status: 200,
+      json: {
+        id: "featureinfo",
+        properties: { protocol: "geoadmin:features", externalIds: ["test"] },
+        links: [{ rel: "dataservice", href: "http://oar.test/dataservice" }],
+      },
+    }),
+  );
+  await page.route("http://oar.test/dataservice", (route) =>
+    route.fulfill({
+      status: 200,
+      json: { links: [{ rel: "describes", href: IDENTIFY_BASE_URL }] },
+    }),
+  );
+  await page.route(`${IDENTIFY_BASE_URL}/identify?**`, (route) =>
+    route.fulfill({
+      status: 200,
+      json: {
+        results: [
+          {
+            id: 1,
+            geometry: { type: "Point", coordinates: [2600000, 1200000] },
+            properties: { label: "Bern" },
+          },
+        ],
+      },
+    }),
+  );
+  await page.route(`${IDENTIFY_BASE_URL}/test/1/htmlPopup?**`, (route) =>
+    route.fulfill({ status: 200, body: "<p>Feature content</p>" }),
+  );
+}
+
 /**
  * The catalog list request has a query string, while the item requests do not.
  * A glob with `?` would also match the item paths, so match the query itself.

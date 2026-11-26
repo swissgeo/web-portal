@@ -13,6 +13,8 @@ const { isStacked = false } = defineProps<{ isStacked?: boolean }>();
 const featureStore = useFeaturesStore();
 const layerStore = useLayerStore();
 
+const featureDataByUuid = computed(() => featureStore.selectedFeaturesByUuid);
+
 function layerTab(layerUuid: string, featuresData: FeatureData[] | null) {
   const layer = layerStore.getLayer(layerUuid);
   return {
@@ -24,8 +26,8 @@ function layerTab(layerUuid: string, featuresData: FeatureData[] | null) {
 
 // A failed layer has no features, its page shows an error instead
 const tabs: Ref<TabsItem[]> = computed(() => [
-  ...Object.entries(featureStore.selectedFeaturesByUuid).map(
-    ([layerUuid, featuresData]) => layerTab(layerUuid, featuresData),
+  ...Object.entries(featureDataByUuid.value).map(([layerUuid, featuresData]) =>
+    layerTab(layerUuid, featuresData),
   ),
   ...featureStore.failedLayerUuids.map((layerUuid) =>
     layerTab(layerUuid, null),
@@ -34,13 +36,9 @@ const tabs: Ref<TabsItem[]> = computed(() => [
 
 const active = ref(tabs.value[0]?.value);
 
-// A new result opens its first layer, other layer changes keep the open tab
-watch(
-  () => [featureStore.selectedFeaturesByUuid, featureStore.failedLayerUuids],
-  () => {
-    active.value = tabs.value[0]?.value;
-  },
-);
+watch(featureDataByUuid, () => {
+  active.value = tabs.value[0]?.value;
+});
 </script>
 <template>
   <div

@@ -1,16 +1,29 @@
 <script lang="ts" setup>
-import { useFeaturesStore } from "@swissgeo/feature";
+import { useSidebarStore } from "@swissgeo/skeleton";
 import ResponsivePanel from "~/components/sidebar/ResponsivePanel.vue";
 import { panelSnapPointKey } from "~/types/injectionKeys";
 
 import FeatureInfo from "./FeatureInfo.vue";
+
+const { isLoading } = defineProps<{ isLoading: boolean }>();
 
 const emit = defineEmits<{
   close: [];
 }>();
 
 const { t } = useI18n();
-const featureStore = useFeaturesStore();
+
+// Only one drawer shows at a time: this one or a map panel
+const sidebarStore = useSidebarStore();
+sidebarStore.closeSidebar();
+watch(
+  () => sidebarStore.currentSidebar,
+  (sidebar) => {
+    if (sidebar) {
+      emit("close");
+    }
+  },
+);
 
 // The drawer always opens at its own height, also after a panel was full height
 const panelSnapPoint = inject(panelSnapPointKey, ref(null));
@@ -27,7 +40,7 @@ panelSnapPoint.value = null;
     @close="emit('close')"
   >
     <p
-      v-if="featureStore.isLoading"
+      v-if="isLoading"
       role="status"
       class="px-4 py-3 text-sm text-muted"
       data-testid="feature-info-loading"
