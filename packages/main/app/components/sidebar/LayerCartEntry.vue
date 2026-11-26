@@ -155,6 +155,7 @@ const rowButton = {
   size: "xs",
   color: "accent",
   variant: "ghost",
+  class: "p-0",
 } as const;
 const largeIcon = { leadingIcon: "size-5" };
 </script>
@@ -202,7 +203,7 @@ const largeIcon = { leadingIcon: "size-5" };
       >
         {{ layer.displayName }}
       </button>
-      <div class="flex shrink-0 items-center">
+      <div class="flex shrink-0 items-center gap-1.5">
         <UButton
           :icon="layer.isVisible ? 'i-lucide-eye' : 'i-lucide-eye-off'"
           :title="layer.isVisible ? t('layers.hide') : t('layers.show')"
@@ -247,7 +248,10 @@ const largeIcon = { leadingIcon: "size-5" };
           data-vaul-no-drag
           :items="timeItems"
           size="xs"
-          :ui="{ base: 'text-xs', trailingIcon: 'text-accent' }"
+          :ui="{
+            base: 'py-0.5 text-xs ring-0 hover:bg-default hover:ring-1 hover:ring-accented',
+            trailingIcon: 'text-accent',
+          }"
         />
       </div>
       <div class="flex flex-col gap-1">

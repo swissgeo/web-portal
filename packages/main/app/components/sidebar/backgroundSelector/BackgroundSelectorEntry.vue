@@ -35,10 +35,9 @@ const layerTranslationKey = computed(() =>
     :data-testid="testId"
     @click="emit('click')"
   >
-    <!-- In dark mode, a gap separates the light border from a light map image. -->
     <div
       class="absolute inset-0 rounded-md bg-white"
-      :class="{ 'dark:inset-0.5': isCurrent }"
+      :class="{ 'border border-default': isCurrent }"
     >
       <img
         v-if="backgroundLayer !== null && backgroundLayer !== undefined"

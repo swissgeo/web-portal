@@ -58,7 +58,7 @@ function onSelect(distributionId: string) {
         :items="items"
         size="xs"
         :ui="{
-          base: 'text-xs',
+          base: 'py-0.5 text-xs ring-0 hover:bg-default hover:ring-1 hover:ring-accented',
           trailingIcon: 'text-accent',
           itemLabel: 'whitespace-normal',
         }"
