@@ -19,7 +19,7 @@ const displayReportIssueForm = ref(false);
       variant="link"
       color="error"
       size="sm"
-      class="gap-1 px-0 font-bold"
+      class="gap-1.5 px-0 py-space-2xs leading-[1.3] font-bold"
       :to="reportIssuePortalUrl"
       target="_blank"
       external
@@ -55,7 +55,7 @@ const displayReportIssueForm = ref(false);
         variant="link"
         color="error"
         size="sm"
-        class="gap-1 px-0 font-bold"
+        class="gap-1.5 px-0 py-space-2xs leading-[1.3] font-bold"
         @click="displayReportIssueForm = true"
       >
         <UIcon name="i-lucide-triangle-alert" class="size-[13px] shrink-0" />

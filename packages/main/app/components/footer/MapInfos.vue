@@ -30,7 +30,7 @@ const { olMap } = storeToRefs(useMapStore());
   background: transparent;
   color: var(--ui-text);
   font-size: var(--text-tiny);
-  line-height: var(--text-tiny--line-height);
+  line-height: 1.3;
   font-weight: 500;
 }
 </style>

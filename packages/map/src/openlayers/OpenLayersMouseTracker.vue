@@ -59,7 +59,7 @@ watchDebounced(
       variant="none"
       :ui="{
         content: 'min-w-fit',
-        base: 'min-w-fit py-space-2xs ps-0 pe-[calc(13px+0.375rem)] text-tiny font-medium text-accent',
+        base: 'min-w-fit py-space-2xs ps-0 pe-[calc(13px+0.375rem)] text-tiny leading-[1.3] font-medium text-accent',
         trailing: 'pe-0',
         trailingIcon: 'size-[13px] text-accent',
       }"
@@ -72,7 +72,7 @@ watchDebounced(
       v-model="displayedFormatId"
       @update:modelValue="setDisplayedFormatWithId"
     />
-    <div class="font-mono">
+    <div class="text-default">
       {{ mousePosition }}
     </div>
   </div>
