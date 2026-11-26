@@ -1,6 +1,5 @@
 // The accepted notations follow the ones of web-mapviewer:
 // https://github.com/geoadmin/web-mapviewer/blob/v1.62.0-beta.10/packages/mapviewer/src/utils/coordinates/coordinateExtractors.js
-// What3words is the exception, it needs an API call and cannot be resolved by this parser.
 
 import type { SingleCoordinate } from "@/coordinatesUtils";
 import type CoordinateSystem from "@/proj/CoordinateSystem";

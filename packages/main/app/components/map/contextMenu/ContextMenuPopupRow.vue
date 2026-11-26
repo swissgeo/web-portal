@@ -6,13 +6,6 @@ import { useClipboard } from "@vueuse/core";
 const { labelLink, value } = defineProps<ContextMenuRow>();
 
 const { copy, copied } = useClipboard({ legacy: true }); // legacy: true enables document.execCommand fallback for browsers without Clipboard API support
-
-const resolvedLink = computed(() => {
-  if (typeof labelLink === "function") {
-    return labelLink(value);
-  }
-  return labelLink;
-});
 </script>
 
 <template>
@@ -20,8 +13,8 @@ const resolvedLink = computed(() => {
     class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"
   >
     <ULink
-      v-if="resolvedLink"
-      :to="resolvedLink"
+      v-if="labelLink"
+      :to="labelLink"
       target="_blank"
       rel="noopener noreferrer"
       class="min-w-30"

@@ -7,7 +7,6 @@ function createValidConfig() {
   // unknown, so that tests can set values of the wrong type.
   const drawingAllowedDomains: unknown = ["drawings.example.test"];
   return {
-    what3wordsApiKey: "",
     livingdocsAuthToken: "",
     geoadminApiBaseUrl: "https://api.example.test/rest/services",
     reportIssueServiceUrl: "https://report.example.test/feedback",

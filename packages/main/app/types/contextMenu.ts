@@ -1,5 +1,5 @@
 export interface ContextMenuRow {
   label: string;
-  labelLink?: string | ((_value: string) => string);
+  labelLink?: string;
   value: string;
 }

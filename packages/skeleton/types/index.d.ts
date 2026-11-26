@@ -4,7 +4,6 @@ declare global {
   // TODO there should be a better way than this, decoupling the package from the need for useRuntimeConfig
   // alltogether IMO
   const useRuntimeConfig: () => {
-    what3wordsApiKey: string;
     geoadminApiBaseUrl: string;
     reportIssueServiceUrl: string;
     livingdocsApiEndpoint: string;
