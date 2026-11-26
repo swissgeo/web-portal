@@ -128,6 +128,7 @@
 
   --color-accent-active: var(--ui-accent-active);
   --color-accent-hover: var(--ui-accent-hover);
+  --color-btn-hover: var(--ui-btn-hover);
 
   --color-nav-brand: var(--ui-nav-brand);
   --color-nav-brand-muted: var(--ui-nav-brand-muted);
@@ -204,6 +205,7 @@
 
     --ui-accent-active: var(--ui-color-accent-900);
     --ui-accent-hover: var(--ui-color-accent-700);
+    --ui-btn-hover: var(--ui-color-primary-600);
 
     --ui-nav-brand: var(--color-petrol-800);
     --ui-nav-brand-muted: var(--color-petrol-700);
@@ -241,6 +243,7 @@
 
     --ui-accent-active: var(--ui-color-accent-50);
     --ui-accent-hover: var(--ui-color-accent-200);
+    --ui-btn-hover: var(--ui-color-primary-200);
 
     --ui-border: var(--ui-color-neutral-700);
     --ui-border-accented: var(--ui-color-neutral-600);
