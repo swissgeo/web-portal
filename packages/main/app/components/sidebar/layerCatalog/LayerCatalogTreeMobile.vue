@@ -73,6 +73,7 @@ const selectedEntryClass = "bg-elevated text-accent-active";
       <UButton
         icon="i-lucide-x"
         :aria-label="t('layerCatalog.close')"
+        data-testid="catalog-tree-close"
         color="accent"
         variant="link"
         class="cursor-pointer p-0"
@@ -89,6 +90,7 @@ const selectedEntryClass = "bg-elevated text-accent-active";
             block
             icon="i-lucide-chevron-left"
             :class="[entryClass, 'pl-1']"
+            data-testid="catalog-tree-back"
             @click="goBack"
           >
             {{ t("layerCatalog.back") }}
@@ -103,6 +105,7 @@ const selectedEntryClass = "bg-elevated text-accent-active";
                 'font-bold',
                 folder.id === conceptId && selectedEntryClass,
               ]"
+              data-testid="catalog-tree-folder"
               @click="selectFolder"
             >
               {{ folder.label }}
@@ -118,6 +121,7 @@ const selectedEntryClass = "bg-elevated text-accent-active";
               child.children.length ? 'i-lucide-chevron-right' : undefined
             "
             :class="[entryClass, child.id === conceptId && selectedEntryClass]"
+            data-testid="catalog-tree-child"
             @click="selectChild(child)"
           >
             {{ child.label }}
